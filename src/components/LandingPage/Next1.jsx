@@ -8,7 +8,7 @@ function Next1() {
     {
         image: './Next/realtime.png',
         link: 'https://google.com/',
-        title: 'Real-Time Mock Test',
+        title: 'Real-Time Interview',
         description: ''
       },
       {
