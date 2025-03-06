@@ -10,8 +10,10 @@ import Simulation from "./components/Simulation/Simulation";
 import Reports from "./components/Reports/Reports";
 import Resume from "./components/Resume/Resume";
 import PopChat from "./components/common/Chatbot";
+import axios from "axios";
 
 function App() {
+  axios.defaults.baseURL = "https://hiq-resume-analyzer.onrender.com/";
   return (
     <BrowserRouter>
       <Navbar />
