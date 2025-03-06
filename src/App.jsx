@@ -13,7 +13,7 @@ import PopChat from "./components/common/Chatbot";
 import axios from "axios";
 
 function App() {
-  axios.defaults.baseURL = "https://hiq-resume-analyzer.onrender.com/";
+  axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
   return (
     <BrowserRouter>
       <Navbar />
