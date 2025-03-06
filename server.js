@@ -88,5 +88,5 @@ app.use((err, req, res, next) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Resume analysis endpoint: http://localhost:${PORT}/analyze-resume`);
+  console.log(`Resume analysis endpoint: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`);
 }); 
