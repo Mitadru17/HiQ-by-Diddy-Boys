@@ -1,9 +1,10 @@
 # HiQ – Your AI Interview & Meeting Copilot 🎓💡
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/your-repo/hiq-quiz-webapp.svg)](https://github.com/your-repo/hiq-quiz-webapp/graphs/contributors)
-[![Issues](https://img.shields.io/github/issues/your-repo/hiq-quiz-webapp.svg)](https://github.com/your-repo/hiq-quiz-webapp/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/your-repo/hiq-quiz-webapp.svg)](https://github.com/your-repo/hiq-quiz-webapp/pulls)
+[![Contributors](https://img.shields.io/github/contributors/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/graphs/contributors)
+[![Issues](https://img.shields.io/github/issues/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/pulls)
+
 
 ## 📌 Overview
 
