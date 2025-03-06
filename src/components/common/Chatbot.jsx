@@ -148,7 +148,7 @@ function PopChat() {
       {/* Animated Threads Effect */}
       {isOpen && (
         <div className="absolute bottom-0 w-full">
-          <Threads amplitude={2} distance={1} enableMouseInteraction={true} />
+        
         </div>
       )}
     </div>

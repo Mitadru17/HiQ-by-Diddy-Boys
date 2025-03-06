@@ -13,7 +13,8 @@ import PopChat from "./components/common/Chatbot";
 import axios from "axios";
 
 function App() {
-  axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
+  // axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
+  axios.defaults.baseURL = "http://localhost:3000/";
   return (
     <BrowserRouter>
       <Navbar />
