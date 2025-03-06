@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 function Dashboard() {
   const cards = [
     {
-      title: "REALTIME AI INTERVIEW",
+      title: "REALTIME AI INTERVIEW PRACTICE",
       description:
         "Experience AI-driven mock interviews with real-time feedback, helping you prepare for job opportunities more effectively.",
       link: "/dashboard/interview",

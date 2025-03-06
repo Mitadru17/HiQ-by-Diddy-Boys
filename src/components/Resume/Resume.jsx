@@ -45,7 +45,7 @@ function Resume() {
 
       // API Call (Replace with your backend API)
       const response = await axios.post(
-        "https://your-api-endpoint.com/upload",
+        "/analyze-resume",
         formData,
         {
           headers: {
