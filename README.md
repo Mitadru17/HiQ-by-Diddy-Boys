@@ -1,4 +1,4 @@
-# HIQ Quiz Web App 🎓💡
+# HiQ – Your AI Interview & Meeting Copilot 🎓💡
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/your-repo/hiq-quiz-webapp.svg)](https://github.com/your-repo/hiq-quiz-webapp/graphs/contributors)
