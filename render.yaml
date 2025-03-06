@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: resume-analyzer
+    env: node
+    buildCommand: yarn install
+    startCommand: yarn start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORT
+        value: 3000

@@ -107,6 +107,22 @@ Error responses follow this format:
 }
 ```
 
+## Deployment on Render
+
+This application is configured for deployment on Render:
+
+1. **Create a new Web Service** on Render
+2. **Connect your repository**
+3. **Configure the service**:
+   - Build Command: `yarn install`
+   - Start Command: `yarn start`
+4. **Add Environment Variables**:
+   - `GEMINI_API_KEY`: Your Google Gemini API key
+   - `PORT`: 3000 (or let Render assign automatically)
+   - `NODE_ENV`: production
+
+The deployment should work automatically with the provided configuration.
+
 ## License
 
 ISC
