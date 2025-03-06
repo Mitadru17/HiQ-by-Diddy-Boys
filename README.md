@@ -1,58 +1,12 @@
-# HiQ – Your AI Interview & Meeting Copilot 🎓💡
+# React + Vite
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/graphs/contributors)
-[![Issues](https://img.shields.io/github/issues/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/pulls)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+Currently, two official plugins are available:
 
-## 📌 Overview
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-**HIQ Quiz Web App** is an AI-powered platform designed to help students prepare for **mock interviews**, **technical tests**, and **resume reviews**. It provides **personalized feedback**, **realistic AI-driven interview simulations**, and **performance tracking** to enhance job readiness.
+## Expanding the ESLint configuration
 
----
-
-## 🚀 Features
-
-✅ **AI Mock Interview** – Simulates real-world AI-based interviews with adaptive questioning.  
-✅ **Quiz & Tests** – Covers AI, ML, coding, and aptitude-based assessments.  
-✅ **Resume Reviewer** – AI-driven resume analysis with improvement suggestions.  
-✅ **Performance Analytics** – Tracks progress with detailed insights and recommendations.  
-✅ **User Dashboard** – Personalized learning experience with saved progress.  
-
----
-
-## 🛠 Tech Stack
-
-| Technology  | Description |
-|------------|------------|
-| **Frontend**  | React.js, Tailwind CSS  |
-| **Backend**  | Node.js, Express.js |
-| **Database**  | MongoDB / PostgreSQL |
-| **AI Models**  | OpenAI API, TensorFlow, NLP-based evaluation |
-| **Hosting**  | Vercel, AWS, Firebase |
-
----
-
-## 📌 Installation & Setup
-
-### Prerequisites
-
-- Node.js (>= 16.x)
-- MongoDB / PostgreSQL (if using a database)
-- Git
-
-### Steps
-
-```sh
-# Clone the repository
-git clone https://github.com/your-repo/hiq-quiz-webapp.git
-
-# Navigate into the project directory
-cd hiq-quiz-webapp
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
+If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
