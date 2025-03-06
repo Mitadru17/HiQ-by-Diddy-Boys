@@ -1,2 +1,57 @@
-# HiQ-by-Diddy-Boys
-An AI-powered platform for mock interviews, resume analysis, and personalized training to help users prepare for job placements. Uses React.js, Node.js, MongoDB, and AI models for real-time feedback and skill improvement.
+# HIQ Quiz Web App 🎓💡
+
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Contributors](https://img.shields.io/github/contributors/your-repo/hiq-quiz-webapp.svg)](https://github.com/your-repo/hiq-quiz-webapp/graphs/contributors)
+[![Issues](https://img.shields.io/github/issues/your-repo/hiq-quiz-webapp.svg)](https://github.com/your-repo/hiq-quiz-webapp/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/your-repo/hiq-quiz-webapp.svg)](https://github.com/your-repo/hiq-quiz-webapp/pulls)
+
+## 📌 Overview
+
+**HIQ Quiz Web App** is an AI-powered platform designed to help students prepare for **mock interviews**, **technical tests**, and **resume reviews**. It provides **personalized feedback**, **realistic AI-driven interview simulations**, and **performance tracking** to enhance job readiness.
+
+---
+
+## 🚀 Features
+
+✅ **AI Mock Interview** – Simulates real-world AI-based interviews with adaptive questioning.  
+✅ **Quiz & Tests** – Covers AI, ML, coding, and aptitude-based assessments.  
+✅ **Resume Reviewer** – AI-driven resume analysis with improvement suggestions.  
+✅ **Performance Analytics** – Tracks progress with detailed insights and recommendations.  
+✅ **User Dashboard** – Personalized learning experience with saved progress.  
+
+---
+
+## 🛠 Tech Stack
+
+| Technology  | Description |
+|------------|------------|
+| **Frontend**  | React.js, Tailwind CSS  |
+| **Backend**  | Node.js, Express.js |
+| **Database**  | MongoDB / PostgreSQL |
+| **AI Models**  | OpenAI API, TensorFlow, NLP-based evaluation |
+| **Hosting**  | Vercel, AWS, Firebase |
+
+---
+
+## 📌 Installation & Setup
+
+### Prerequisites
+
+- Node.js (>= 16.x)
+- MongoDB / PostgreSQL (if using a database)
+- Git
+
+### Steps
+
+```sh
+# Clone the repository
+git clone https://github.com/your-repo/hiq-quiz-webapp.git
+
+# Navigate into the project directory
+cd hiq-quiz-webapp
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
