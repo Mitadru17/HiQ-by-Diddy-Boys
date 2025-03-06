@@ -2,37 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
-  font-family: 'Parabole';
-  src: url('./assets/Font/Parabole.woff2') format('woff2'); 
-
+  font-family: "Parabole";
+  src: url("./assets/Font/Parabole.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Fraktion';
-  src: url('./assets/Font/fraktion.ttf') format('ttf');    
-
+  font-family: "Fraktion";
+  src: url("./assets/Font/fraktion.ttf") format("ttf");
 }
 
 @font-face {
-  font-family: 'Valorax';
-  src: url('./assets/Font/valorax.otf') format('opentype');    
-
+  font-family: "Valorax";
+  src: url("./assets/Font/valorax.otf") format("opentype");
 }
 @font-face {
-  font-family: 'Dragon';
-  src: url('./assets/Font/dragon.otf') format('opentype');    
-
+  font-family: "Dragon";
+  src: url("./assets/Font/dragon.otf") format("opentype");
 }
 
-*{
-  @apply m-0 p-0 font-valorax
+* {
+  @apply m-0 p-0 font-valorax;
 }
 
-body{
-  @apply w-screen h-screen  bg-orange-50 overflow-x-hidden
+body {
+  @apply w-screen h-screen  bg-orange-50 overflow-x-hidden;
 }
-li{
-  @apply cursor-pointer hover:scale-110 duration-150
+li {
+  @apply cursor-pointer hover:scale-110 duration-150;
+}
+
+.edit::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full; /* Rounded and styled thumb */
+}
+
+body::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full; /* Rounded and styled thumb */
+}
+
+body::-webkit-scrollbar-track {
+  @apply bg-transparent; /* Transparent background for the track */
+}
+
+.edit::-webkit-scrollbar-track {
+  @apply bg-transparent; /* Transparent background for the track */
+}
+
+body::-webkit-scrollbar-button {
+  display: none;
+}
+/* Optional: Hide the scrollbar buttons (arrows) */
+.edit::-webkit-scrollbar-button {
+  display: none;
 }
