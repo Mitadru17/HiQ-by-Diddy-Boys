@@ -1,0 +1,11 @@
+<svg width="36" height="35" viewBox="0 0 36 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ic:baseline-dashboard">
+<path id="Vector" d="M4.93945 18.6672H16.4068V4.63794H4.93945V18.6672ZM4.93945 29.8906H16.4068V21.473H4.93945V29.8906ZM19.2737 29.8906H30.741V15.8613H19.2737V29.8906ZM19.2737 4.63794V13.0555H30.741V4.63794H19.2737Z" fill="url(#paint0_linear_1_474)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_1_474" x1="17.8402" y1="4.63794" x2="17.8402" y2="29.8906" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFB912"/>
+<stop offset="1" stop-color="#49D043"/>
+</linearGradient>
+</defs>
+</svg>

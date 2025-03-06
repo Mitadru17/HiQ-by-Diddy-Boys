@@ -2,6 +2,7 @@ import React from "react";
 import PixelCard from "../utils/Pixel";
 import Crosshair from "../utils/Crosshair";
 import { Link } from "react-router-dom";
+import checkSession from "../../../utils/session";
 
 function Dashboard() {
   const cards = [
@@ -36,6 +37,8 @@ function Dashboard() {
       link: "/dashboard/reports",
     },
   ];
+
+  checkSession()
 
   return (
     <div className="h-screen w-screen mt-10 p-10">

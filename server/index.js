@@ -116,6 +116,8 @@ app.get("/questions", async (req, res) => {
   }
 });
 
+app.use("/auth", require("./routes/auth"));
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

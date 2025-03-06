@@ -1,14 +1,23 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { DataProvider } from "../../App";
 
 function Navbar() {
+  const { token ,setToken} = useContext(DataProvider);
+  const nav = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove the token from localStorage
+    setToken(null)
+  };
+
   return (
     <div className="w-screen h-20 flex flex-col justify-between items-center">
       <nav className="w-screen h-20 flex justify-between items-center">
         <img
           src="./Navbar/left.webp"
           className="w-[350px] -translate-x-[8vw]"
-          alt=""
+          alt="Logo"
         />
         <ul className="flex justify-evenly text-black text-2xl items-center w-[30%] -translate-x-40">
           <Link to={"/"}>
@@ -17,13 +26,26 @@ function Navbar() {
           <li>Features</li>
           <li>Support</li>
         </ul>
-        <p></p>
-       
+        <div>
+          {token ? (
+            <p
+              onClick={handleLogout} // Fixed: Ensure the function is invoked on click
+              className="p-2 border-black border bg-red-500 text-white w-[200px] mr-5 text-center rounded-full cursor-pointer"
+            >
+              Logout
+            </p>
+          ) : (
+            <Link to={"/login"}>
+              <p className="p-2 border-black border bg-red-500 text-white w-[200px] mr-5 text-center rounded-full cursor-pointer">
+                Login
+              </p>
+            </Link>
+          )}
+        </div>
       </nav>
-      <div className=" border-b-4 border-black w-1/2"></div>
+      <div className="border-b-4 border-black w-1/2"></div>
     </div>
   );
 }
 
 export default Navbar;
-// https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.vecteezy.com%2Ffree-photos%2Finfinite-loop%3Fpage%3D5&psig=AOvVaw0Uv31nnKqsloO-tVGFXkQ2&ust=1741331958544000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIjoiZv19IsDFQAAAAAdAAAAABAJ

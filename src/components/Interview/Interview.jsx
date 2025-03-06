@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { IoReturnUpBack, IoPlay, IoStop, IoSend } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Crosshair from "../utils/Crosshair";
 
 function Interview() {
   const [step, setStep] = useState(1);
@@ -33,40 +34,45 @@ function Interview() {
 
   // **Step 2: Start Testing Video & Audio**
   const startTesting = async () => {
+    console.log("Requesting camera access...");
+
     try {
-      // ✅ Enumerate devices to get available video input devices (cameras)
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(device => device.kind === 'videoinput');
-      
-      // Find front camera (if available) or fallback to the first available camera
-      const frontCamera = videoDevices.find(device => device.label.toLowerCase().includes('front')) || videoDevices[0];
-  
-      // Define constraints based on the camera deviceId
+      console.log("Available devices:", devices);
+
+      const videoDevices = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
+      console.log("Video devices:", videoDevices);
+
+      const frontCamera =
+        videoDevices.find((device) =>
+          device.label.toLowerCase().includes("front")
+        ) || videoDevices[0];
+      console.log("Selected camera:", frontCamera);
+
       const constraints = {
         video: {
           deviceId: frontCamera.deviceId,
-          facingMode: 'user', // Ensure front camera is used
+          facingMode: "user",
         },
         audio: true,
       };
-  
-      // Request media stream
+
       const userStream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log("Media stream created:", userStream);
+
       setStream(userStream);
       setIsTesting(true);
-  
-      // ✅ Assign video stream to video element
+
       if (videoRef.current) {
         videoRef.current.srcObject = userStream;
       }
-  
-      console.log(userStream.getVideoTracks());
     } catch (error) {
       console.error("❌ Error accessing camera/microphone:", error);
       alert("❌ Please allow camera and microphone access to proceed.");
     }
   };
-  
 
   // **Step 3: Start Interview Loop**
   const startInterview = () => {
@@ -85,7 +91,9 @@ function Interview() {
   // **Fetch a question from API**
   const fetchQuestion = async () => {
     try {
-      const response = await axios.get("https://your-api-endpoint.com/get-question");
+      const response = await axios.get(
+        "/questions?topic="+selectedInterview
+      );
       setQuestion(response.data.question);
       startRecording();
     } catch (error) {
@@ -155,24 +163,29 @@ function Interview() {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
     }
+    setStream(null); // Reset the stream state
     setStep(4);
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center text-black p-6">
+    <div className="w-screen h-screen flex flex-col justify-start items-center text-black p-6">
       {/* Header */}
       <div className="flex p-4 justify-between w-full max-w-3xl">
         <Link to="/dashboard">
           <IoReturnUpBack fontSize={40} className="cursor-pointer" />
         </Link>
-        <h1 className="text-[40px] font-bold text-center">Realtime Interview Practice</h1>
+        <h1 className="text-[40px] font-bold text-center">
+          Realtime Interview Practice
+        </h1>
         <p></p>
       </div>
 
       {/* Step 1: Select Interview Type */}
       {step === 1 && (
         <div className="mt-6 w-full max-w-3xl">
-          <h2 className="text-xl font-bold text-center mb-4">Choose an Interview Type</h2>
+          <h2 className="text-xl font-bold text-center mb-4">
+            Choose an Interview Type
+          </h2>
           <div className="space-y-4">
             {interviewOptions.map((option, index) => (
               <button
@@ -190,7 +203,9 @@ function Interview() {
       {/* Step 2: Test Audio & Video */}
       {step === 2 && (
         <div className="mt-6 flex flex-col items-center space-y-4">
-          <p className="text-lg font-semibold">Interview Type: {selectedInterview}</p>
+          <p className="text-lg font-semibold">
+            Interview Type: {selectedInterview}
+          </p>
           {!isTesting ? (
             <button
               onClick={startTesting}
@@ -220,16 +235,22 @@ function Interview() {
 
       {/* Step 3: Interview Session */}
       {step === 3 && (
-        <div className="mt-6 text-center">
-          <h2 className="text-xl font-bold">Interview Question {questionCount.current + 1} / {maxQuestions}</h2>
-          <p className="text-lg mt-4">{question}</p>
-          <button onClick={stopInterview} className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg mt-4">
+        <div className="mt-6 text-center h-[70vh]">
+          <h2 className="text-xl font-bold">
+            Interview Question {questionCount.current + 1} / {maxQuestions}
+          </h2>
+          <p className="text-lg mt-4 font-monst font-bold">{question}</p>
+          <button
+            onClick={stopInterview}
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg mt-4"
+          >
             Stop Interview
           </button>
         </div>
       )}
+      {/* <Crosshair color="#000" /> */}
     </div>
   );
 }
 
-export default Interview;  
+export default Interview;

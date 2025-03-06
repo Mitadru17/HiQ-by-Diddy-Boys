@@ -1,0 +1,11 @@
+<svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="game-icons:virtual-marker">
+<path id="Vector" d="M19.4251 2.58868L3.09326 16.8619H12.4257L19.4251 10.9147L26.4245 16.8619H35.757L19.4251 2.58868ZM19.4251 15.6725L15.6338 18.5717H3.09326V19.9098H15.6338L19.4251 22.8091L23.2164 19.9098H35.757V18.5717H23.2164L19.4251 15.6725ZM3.09326 21.6196L19.4251 35.8929L35.757 21.6196H26.4245L19.4251 27.5668L12.4257 21.6196H3.09326Z" fill="url(#paint0_linear_1_431)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_1_431" x1="19.4251" y1="2.58868" x2="19.4251" y2="35.8929" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFB912"/>
+<stop offset="1" stop-color="#49D043"/>
+</linearGradient>
+</defs>
+</svg>
