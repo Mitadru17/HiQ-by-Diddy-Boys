@@ -19,18 +19,18 @@ function Next2() {
           AI-Powered Conversations
         </p>
 
-        <p className="absolute z-20 left-[520px] top-[100px] text-lg text-gray-600 max-w-xl">
+        <p className="absolute z-20 left-[520px] top-[100px] text-lg text-gray-600 max-w-xl font-dragon">
           Experience the next-generation AI chatbot, powered by cutting-edge
-          natural language processing. Engage in **human-like conversations**,
+          natural language processing. Engage in human-like conversations,
           get instant answers, and explore limitless creativity with ChatGPT.
         </p>
 
         {/* Key Features */}
-        <ul className="absolute z-20 left-[520px] top-[300px] text-lg text-gray-700">
-          <li>✅ Intelligent Responses</li>
-          <li>✅ Context-Aware Conversations</li>
-          <li>✅ Creative Writing Assistance</li>
-          <li>✅ Instant Problem Solving</li>
+        <ul className="absolute z-20 left-[520px] top-[300px] text-3xl text-gray-700 ">
+          <li className="font-dragon">✅ Intelligent Responses</li>
+          <li className="font-dragon">✅ Context-Aware Conversations</li>
+          <li className="font-dragon">✅ Creative Writing Assistance</li>
+          <li className="font-dragon">✅ Instant Problem Solving</li>
         </ul>
 
         {/* Interactive Threads Animation */}
