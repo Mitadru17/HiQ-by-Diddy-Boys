@@ -7,26 +7,13 @@ const { analyzeResume } = require('./resumeAnalyzer');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Configure multer for PDF uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = 'uploads';
-    // Create uploads directory if it doesn't exist
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `resume-${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+// Configure multer for memory storage (not disk storage which won't work on serverless)
+const storage = multer.memoryStorage();
 
 // Filter function to accept only PDF files
 const fileFilter = (req, file, cb) => {
@@ -50,21 +37,15 @@ app.post('/analyze-resume', upload.single('resume'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded or file is not a PDF' });
     }
 
-    const filePath = req.file.path;
+    // Since we're using memory storage, file data is in buffer, not on disk
+    const fileBuffer = req.file.buffer;
     
     try {
-      // Analyze the resume and get results
-      const analysisResults = await analyzeResume(filePath);
-      
-      // Clean up - delete the uploaded file after analysis
-      fs.unlinkSync(filePath);
+      // Analyze the resume and get results with buffer directly
+      const analysisResults = await analyzeResume(fileBuffer);
       
       return res.status(200).json(analysisResults);
     } catch (error) {
-      // Clean up the file even if analysis fails
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
       throw error;
     }
   } catch (error) {
@@ -85,8 +66,14 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Resume analysis endpoint: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`);
-}); 
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Resume analysis endpoint: http://localhost:${PORT}/analyze-resume`);
+  });
+}
+
+// Export for Vercel
+module.exports = app; 

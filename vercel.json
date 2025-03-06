@@ -3,10 +3,14 @@
   "builds": [
     {
       "src": "server.js",
+<<<<<<< HEAD
       "use": "@vercel/node",
       "config": {
         "maxDuration": 20 
       }
+=======
+      "use": "@vercel/node"
+>>>>>>> ceed64f (deployment updates)
     }
   ],
   "routes": [

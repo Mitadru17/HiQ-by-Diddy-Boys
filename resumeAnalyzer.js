@@ -1,5 +1,4 @@
 const pdfParse = require('pdf-parse');
-const fs = require('fs').promises;
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
@@ -7,14 +6,13 @@ require('dotenv').config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 /**
- * Extract text from a PDF file
- * @param {string} filePath - Path to the PDF file
+ * Extract text from a PDF buffer
+ * @param {Buffer} pdfBuffer - PDF file buffer
  * @returns {Promise<string>} - Extracted text from the PDF
  */
-async function extractTextFromPDF(filePath) {
+async function extractTextFromPDF(pdfBuffer) {
   try {
-    const dataBuffer = await fs.readFile(filePath);
-    const data = await pdfParse(dataBuffer);
+    const data = await pdfParse(pdfBuffer);
     return data.text;
   } catch (error) {
     console.error('Error extracting text from PDF:', error);
@@ -93,13 +91,13 @@ async function getGeminiAnalysis(resumeText) {
 
 /**
  * Analyze a resume PDF file
- * @param {string} filePath - Path to the PDF file
+ * @param {Buffer} pdfBuffer - Buffer containing the PDF file
  * @returns {Promise<Object>} - Analysis results
  */
-async function analyzeResume(filePath) {
+async function analyzeResume(pdfBuffer) {
   try {
-    // Extract text from the PDF
-    const resumeText = await extractTextFromPDF(filePath);
+    // Extract text from the PDF buffer
+    const resumeText = await extractTextFromPDF(pdfBuffer);
     
     // If no text was extracted, throw an error
     if (!resumeText || resumeText.trim() === '') {

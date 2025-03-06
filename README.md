@@ -107,6 +107,28 @@ Error responses follow this format:
 }
 ```
 
+## Deployment on Vercel
+
+This application is configured for serverless deployment on Vercel:
+
+1. **Create a new project** on Vercel
+2. **Connect your repository**
+3. **Configure Environment Variables**:
+   - `GEMINI_API_KEY`: Your Google Gemini API key
+   - `NODE_ENV`: production
+
+The code has been optimized for Vercel's serverless environment:
+
+- Uses memory storage instead of file system storage
+- Properly exports the Express app for serverless functions
+- Includes Vercel-specific configuration
+
+To deploy with Vercel CLI:
+
+```
+vercel
+```
+
 ## Deployment on Render
 
 This application is configured for deployment on Render:
