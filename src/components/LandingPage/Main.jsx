@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 function Main() {
   return (
     <>
-      <div className="relative w-screen h-[88vh] p-4">
+      <div className="home relative w-screen h-[88vh] p-4">
         {/* Waves Component (background) */}
         <div className="absolute top-0 left-0 w-full h-full -z-10">
           <Waves

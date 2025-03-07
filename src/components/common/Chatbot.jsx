@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { IoChatbubbles, IoClose, IoSend } from "react-icons/io5";
 import Threads from "../utils/Threads";
+import { DataProvider } from "../../App";
 
 function PopChat() {
-  const [isOpen, setIsOpen] = useState(false); // State to toggle chat visibility
+  const {ischat, setChat} = useContext(DataProvider); // State to toggle chat visibility
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -73,19 +74,19 @@ function PopChat() {
     <div className="z-50">
       {/* Floating Chat Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setChat(!ischat)}
         className="fixed bottom-5 z-50 right-5 bg-red-500 text-white p-4 rounded-full shadow-lg hover:bg-red-600 transition-all"
       >
-        {isOpen ? <IoClose size={30} /> : <IoChatbubbles size={30} />}
+        {ischat ? <IoClose size={30} /> : <IoChatbubbles size={30} />}
       </button>
 
       {/* Chat Popup Window */}
-      {isOpen && (
+      {ischat && (
         <div className="fixed bottom-16 z-50 right-5 w-[25vw] h-[550px] bg-white border border-gray-300 rounded-lg shadow-lg flex flex-col">
           {/* Chat Header */}
           <div className="bg-red-500 text-white p-3 flex justify-between items-center rounded-t-lg">
             <h2 className="text-lg font-bold">Diddy's Chat</h2>
-            <IoClose size={25} className="cursor-pointer" onClick={() => setIsOpen(false)} />
+            <IoClose size={25} className="cursor-pointer" onClick={() => setChat(false)} />
           </div>
 
           {/* Chat Messages Area */}
@@ -146,7 +147,7 @@ function PopChat() {
       )}
 
       {/* Animated Threads Effect */}
-      {isOpen && (
+      {ischat && (
         <div className="absolute bottom-0 w-full">
         
         </div>
