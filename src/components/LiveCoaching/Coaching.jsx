@@ -117,7 +117,13 @@ function Coaching() {
           ))
         )}
 
-        {loading && <p className="text-gray-500 text-center mt-2">Typing...</p>}
+        {loading && (
+          <div className="flex justify-start items-center gap-1 mt-2">
+            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+          </div>
+        )}
       </div>
 
       {/* Input Box */}
