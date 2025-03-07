@@ -108,19 +108,19 @@ function Resume() {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center text-black p-6">
+    <div className="w-screen min-h-screen flex flex-col items-center bg-gray-50 pb-10">
       {/* Title */}
-      <div className="flex p-4 justify-between w-full max-w-3xl">
+      <div className="flex p-4 justify-between w-full max-w-7xl mb-8">
         <Link to="/dashboard">
           <IoReturnUpBack fontSize={40} className="cursor-pointer" />
         </Link>
         <h1 className="text-[40px] font-bold">Resume Analysis</h1>
-        <p></p>
+        <div className="w-[40px]"></div>
       </div>
 
       {/* Upload Box (Hidden when Response is Shown) */}
       {!analysisResult && (
-        <div className="border-black border-2 w-[500px] p-6 rounded-lg text-center shadow-lg bg-white flex flex-col justify-center items-center">
+        <div className="border-black border-2 w-[500px] p-8 rounded-lg text-center shadow-lg bg-white flex flex-col justify-center items-center">
           <input
             type="file"
             accept=".pdf,.doc,.docx"
@@ -151,79 +151,86 @@ function Resume() {
 
       {/* Resume Analysis Report (4 Cards) */}
       {analysisResult && (
-        <div className="mt-40 flex justify-center items-start gap-10 w-full max-w-[90%] mx-auto flex-wrap">
-          {/* Card 2: Improvements - Left Side */}
-          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl">
-            <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
-            <ul className="list-disc list-inside text-gray-700 mt-4">
-              {analysisResult.improvements.map((improve, index) => (
-                <li className="font-monst font-bold mb-2" key={index}>{improve}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Card 1: Score & Progress - Center */}
-          <div className="w-[220px] h-[220px] p-6 bg-gray-100 border border-gray-300 shadow-lg text-center rounded-full overflow-hidden flex flex-col justify-center items-center transform transition-all duration-300 hover:scale-95 hover:shadow-xl">
-            <h2 className="text-xl font-bold text-gray-800">Resume Score</h2>
-            <p className="font-monst font-bold text-3xl text-gray-700 mt-2">
-              {analysisResult.score}/100
-            </p>
-            <div className="w-[80%] bg-gray-300 rounded-full h-4 mt-3">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${analysisResult.score}%`,
-                  backgroundColor:
-                    analysisResult.score > 80
-                      ? "#22c55e"
-                      : analysisResult.score > 50
-                      ? "#facc15"
-                      : "#ef4444",
-                }}
-              ></div>
+        <div className="w-full max-w-7xl mx-auto px-4">
+          <div className="flex flex-col items-center">
+            {/* Score Card - Top Center */}
+            <div className="w-[220px] h-[220px] p-6 bg-white border border-gray-300 shadow-lg text-center rounded-full overflow-hidden flex flex-col justify-center items-center transform transition-all duration-300 hover:scale-95 hover:shadow-xl mb-10">
+              <h2 className="text-xl font-bold text-gray-800">Resume Score</h2>
+              <p className="font-monst font-bold text-3xl text-gray-700 mt-2">
+                {analysisResult.score}/100
+              </p>
+              <div className="w-[80%] bg-gray-300 rounded-full h-4 mt-3">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${analysisResult.score}%`,
+                    backgroundColor:
+                      analysisResult.score > 80
+                        ? "#22c55e"
+                        : analysisResult.score > 50
+                        ? "#facc15"
+                        : "#ef4444",
+                  }}
+                ></div>
+              </div>
             </div>
-          </div>
 
-          {/* Card 3: Grammar & Missing Keywords - Right Side */}
-          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl">
-            <h2 className="text-xl font-bold text-red-500">Grammar Issues ❌</h2>
-            {analysisResult.grammar_issues.length > 0 ? (
-              <ul className="list-disc list-inside text-gray-700 mt-4">
-                {analysisResult.grammar_issues.map((issue, index) => (
-                  <li className="font-monst font-bold mb-2" key={index}>{issue}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-600">No grammar issues found 🎉</p>
-            )}
+            {/* Three Cards Container */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+              {/* Card 1: Improvements */}
+              <div className="p-8 bg-white border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
+                <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
+                <ul className="list-disc list-inside text-gray-700 mt-4">
+                  {analysisResult.improvements.map((improve, index) => (
+                    <li className="font-monst font-bold mb-2" key={index}>{improve}</li>
+                  ))}
+                </ul>
+              </div>
 
-            <h2 className="text-xl font-bold text-purple-600 mt-6">
-              Missing Keywords 🔍
-            </h2>
-            {analysisResult.missing_keywords.length > 0 ? (
-              <ul className="list-disc list-inside text-gray-700 mt-4">
-                {analysisResult.missing_keywords.map((keyword, index) => (
-                  <li className="font-monst font-bold mb-2" key={index}>{keyword}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-600">No missing keywords detected ✅</p>
-            )}
-          </div>
+              {/* Card 2: Grammar Issues */}
+              <div className="p-8 bg-white border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
+                <h2 className="text-xl font-bold text-red-500">Grammar Issues ❌</h2>
+                {analysisResult.grammar_issues.length > 0 ? (
+                  <ul className="list-disc list-inside text-gray-700 mt-4">
+                    {analysisResult.grammar_issues.map((issue, index) => (
+                      <li className="font-monst font-bold mb-2" key={index}>{issue}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-600">No grammar issues found 🎉</p>
+                )}
 
-          {/* Card 4: Suggested Companies */}
-          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl mt-6">
-            <h2 className="text-xl font-bold text-blue-600">Suggested Companies 🎯</h2>
-            <ul className="list-disc list-inside text-gray-700 mt-4">
-              {suggestedCompanies.map((company, index) => (
-                <li className="font-monst font-bold mb-2" key={index}>{company}</li>
-              ))}
-            </ul>
+                <h2 className="text-xl font-bold text-purple-600 mt-6">
+                  Missing Keywords 🔍
+                </h2>
+                {analysisResult.missing_keywords.length > 0 ? (
+                  <ul className="list-disc list-inside text-gray-700 mt-4">
+                    {analysisResult.missing_keywords.map((keyword, index) => (
+                      <li className="font-monst font-bold mb-2" key={index}>{keyword}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-600">No missing keywords detected ✅</p>
+                )}
+              </div>
+
+              {/* Card 3: Suggested Companies */}
+              <div className="p-8 bg-white border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
+                <h2 className="text-xl font-bold text-blue-600">Suggested Companies 🎯</h2>
+                <ul className="list-disc list-inside text-gray-700 mt-4">
+                  {suggestedCompanies.map((company, index) => (
+                    <li className="font-monst font-bold mb-2" key={index}>{company}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      <Threads amplitude={2} distance={1} enableMouseInteraction={true} />
+      <div className="fixed bottom-0 w-full">
+        <Threads amplitude={2} distance={1} enableMouseInteraction={true} />
+      </div>
     </div>
   );
 }
