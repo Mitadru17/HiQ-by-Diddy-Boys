@@ -1,20 +1,18 @@
 const pdfParse = require('pdf-parse');
-const fs = require('fs').promises;
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
-// Initialize the Google Generative AI with API key
+// Initialize Google Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 /**
- * Extract text from a PDF file
- * @param {string} filePath - Path to the PDF file
+ * Extract text from a PDF file buffer
+ * @param {Buffer} fileBuffer - Buffer of the PDF file
  * @returns {Promise<string>} - Extracted text from the PDF
  */
-async function extractTextFromPDF(filePath) {
+async function extractTextFromPDF(fileBuffer) {
   try {
-    const dataBuffer = await fs.readFile(filePath);
-    const data = await pdfParse(dataBuffer);
+    const data = await pdfParse(fileBuffer); // Parse directly from buffer
     return data.text;
   } catch (error) {
     console.error('Error extracting text from PDF:', error);
@@ -29,10 +27,8 @@ async function extractTextFromPDF(filePath) {
  */
 async function getGeminiAnalysis(resumeText) {
   try {
-    // Get the Gemini Pro model
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Prepare the prompt for resume analysis
     const prompt = `
     You are a professional resume analyzer. Please analyze the following resume text and provide the following:
     
@@ -50,33 +46,23 @@ async function getGeminiAnalysis(resumeText) {
     ${resumeText}
     `;
 
-    // Generate the content from Gemini
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const responseText = response.text();
     
-    // Parse the JSON response
-    // The model should return valid JSON, but we'll handle parsing errors just in case
     try {
-      // Find JSON content in the response - sometimes the model adds explanatory text
       const jsonMatch = responseText.match(/(\{[\s\S]*\})/);
       const jsonStr = jsonMatch ? jsonMatch[0] : responseText;
-      
-      // Parse and validate the JSON structure
       const analysis = JSON.parse(jsonStr);
       
-      // Ensure all required fields are present
-      const validatedAnalysis = {
+      return {
         score: typeof analysis.score === 'number' ? analysis.score : 0,
         grammar_issues: Array.isArray(analysis.grammar_issues) ? analysis.grammar_issues : [],
         improvements: Array.isArray(analysis.improvements) ? analysis.improvements : [],
         missing_keywords: Array.isArray(analysis.missing_keywords) ? analysis.missing_keywords : []
       };
-      
-      return validatedAnalysis;
     } catch (parseError) {
       console.error('Error parsing Gemini response:', parseError);
-      // Fallback to a structured response if parsing fails
       return {
         score: 0,
         grammar_issues: ['Unable to analyze grammar issues due to an error'],
@@ -92,21 +78,18 @@ async function getGeminiAnalysis(resumeText) {
 }
 
 /**
- * Analyze a resume PDF file
- * @param {string} filePath - Path to the PDF file
+ * Analyze a resume PDF file buffer
+ * @param {Buffer} fileBuffer - Buffer of the PDF file
  * @returns {Promise<Object>} - Analysis results
  */
-async function analyzeResume(filePath) {
+async function analyzeResume(fileBuffer) {
   try {
-    // Extract text from the PDF
-    const resumeText = await extractTextFromPDF(filePath);
+    const resumeText = await extractTextFromPDF(fileBuffer);
     
-    // If no text was extracted, throw an error
     if (!resumeText || resumeText.trim() === '') {
       throw new Error('No text content found in the resume');
     }
     
-    // Get analysis from Gemini
     const analysisResults = await getGeminiAnalysis(resumeText);
     
     return {
@@ -119,4 +102,4 @@ async function analyzeResume(filePath) {
   }
 }
 
-module.exports = { analyzeResume }; 
+module.exports = { analyzeResume };

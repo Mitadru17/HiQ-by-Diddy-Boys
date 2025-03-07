@@ -24,63 +24,50 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 
-// ----------- 1) Multer for PDF Resume Uploads (diskStorage) -----------
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = "uploads";
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `resume-${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
+const storage = multer.memoryStorage();
 
 // Filter function to accept only PDF files
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") {
+  if (file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF files are allowed!"), false);
+    cb(new Error('Only PDF files are allowed!'), false);
   }
 };
 
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max file size
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB max file size
 });
 
 // Resume analysis endpoint
-app.post("/analyze-resume", upload.single("resume"), async (req, res) => {
+app.post('/analyze-resume', upload.single('resume'), async (req, res) => {
   try {
     if (!req.file) {
-      return res
-        .status(400)
-        .json({ error: "No file uploaded or file is not a PDF" });
+      return res.status(400).json({ error: 'No file uploaded or file is not a PDF' });
     }
 
-    const filePath = req.file.path;
+    // Since we're using memory storage, file data is in buffer, not on disk
+    const fileBuffer = req.file.buffer;
+    
     try {
-      const analysisResults = await analyzeResume(filePath);
-      fs.unlinkSync(filePath); // Clean up uploaded file
+      // Analyze the resume and get results with buffer directly
+      const analysisResults = await analyzeResume(fileBuffer);
+      
       return res.status(200).json(analysisResults);
     } catch (error) {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
       throw error;
     }
   } catch (error) {
-    console.error("Error analyzing resume:", error);
-    return res.status(500).json({
-      error: "Failed to analyze resume",
-      details: error.message,
+    console.error('Error analyzing resume:', error);
+    return res.status(500).json({ 
+      error: 'Failed to analyze resume', 
+      details: error.message 
     });
   }
 });
+
 
 // ----------- 2) Questions Endpoint -----------
 app.get("/questions", async (req, res) => {
@@ -111,58 +98,68 @@ app.use("/auth", authRouter);
 const audioUpload = multer({ storage: multer.memoryStorage() });
 
 // Mock-interview route: receives audio + question
-app.post("/mock-interview", verifyToken, audioUpload.single("audio"), async (req, res) => {
-  try {
-    // 🔹 Retrieve question
-    const { question } = req.body;
+app.post(
+  "/mock-interview",
+  verifyToken,
+  audioUpload.single("audio"),
+  async (req, res) => {
+    try {
+      // 🔹 Retrieve question
+      const { question } = req.body;
 
-    if (!req.file || !question) {
-      return res.status(400).json({ error: "No audio file uploaded." });
+      if (!req.file || !question) {
+        return res.status(400).json({ error: "No audio file uploaded." });
+      }
+
+      // Use `req.file.buffer` instead of `fs.createReadStream`
+      const audioBuffer = req.file.buffer;
+
+      // Prepare form-data for API
+      const formData = new FormData();
+      formData.append("file", audioBuffer, {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+      });
+
+      // API Request Configuration
+      const options = {
+        method: "POST",
+        url: "https://speech-to-text-ai.p.rapidapi.com/transcribe",
+        params: { lang: "en", task: "transcribe" },
+        headers: {
+          "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+          "x-rapidapi-host": "speech-to-text-ai.p.rapidapi.com",
+          ...formData.getHeaders(),
+        },
+        data: formData,
+      };
+
+      // Send the audio file to the Speech-to-Text API
+      const response = await axios.request(options);
+
+      // Extract transcription
+      const transcription = response.data.text || "Transcription failed";
+
+      // Analyze the answer based on the question
+      const analysis = await analyzeAnswer(question, transcription);
+      Interview.create({
+        email: req.user.email,
+        questions: question,
+        answerur: transcription,
+        accuracy: analysis.accuracy,
+      });
+      res.json({
+        success: true,
+        question,
+        transcription,
+        analysis,
+      });
+    } catch (err) {
+      console.error("Error in /mock-interview:", err);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    // Use `req.file.buffer` instead of `fs.createReadStream`
-    const audioBuffer = req.file.buffer;
-
-    // Prepare form-data for API
-    const formData = new FormData();
-    formData.append("file", audioBuffer, {
-      filename: req.file.originalname ,
-      contentType: req.file.mimetype,
-    });
-
-    // API Request Configuration
-    const options = {
-      method: "POST",
-      url: "https://speech-to-text-ai.p.rapidapi.com/transcribe",
-      params: { lang: "en", task: "transcribe" },
-      headers: {
-        "x-rapidapi-key": process.env.RAPIDAPI_KEY,
-        "x-rapidapi-host": "speech-to-text-ai.p.rapidapi.com",
-        ...formData.getHeaders(),
-      },
-      data: formData,
-    };
-
-    // Send the audio file to the Speech-to-Text API
-    const response = await axios.request(options);
-
-    // Extract transcription
-    const transcription = response.data.text || "Transcription failed";
-
-    // Analyze the answer based on the question
-    const analysis = await analyzeAnswer(question, transcription);
-     Interview.create({ email:req.user.email ,question, answerur: transcription, accuracy: analysis.accuracy });
-    res.json({
-      success: true,
-      question,
-      transcription,
-      analysis,
-    });
-  } catch (err) {
-    console.error("Error in /mock-interview:", err);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-});
+);
 
 // ----------- 5) Global Error Handling -----------
 app.use((err, req, res, next) => {

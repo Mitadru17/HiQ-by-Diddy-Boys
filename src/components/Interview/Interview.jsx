@@ -6,190 +6,212 @@ import LipSyncTracking from "../utils/LipSync";
 import { DataProvider } from "../../App";
 
 function Interview() {
-    const [step, setStep] = useState(1);
-    const [selectedInterview, setSelectedInterview] = useState("");
-    const [isTesting, setIsTesting] = useState(false);
-    const [isRecording, setIsRecording] = useState(false);
-    const [audioLevel, setAudioLevel] = useState(0); // volume meter
-    const [question, setQuestion] = useState("");
-    const {token} = useContext(DataProvider)
-  
-    const [stream, setStream] = useState(null);
-    const [mediaRecorder, setMediaRecorder] = useState(null);
-    const chunks = useRef([]);
-    const intervalRef = useRef(null);
-    const questionCount = useRef(0);
-    const maxQuestions = 20; // 10 minutes (20 questions @30s each)
-  
-    const interviewOptions = [
-      "Technical Interview - Frontend Developer",
-      "Behavioral Interview - Team Lead",
-      "System Design Discussion",
-      "Problem Solving Challenge",
-      "Cultural Fit Assessment",
-    ];
-  
-    // Step 1: Select Interview Type
-    const handleSelectInterview = (type) => {
-      setSelectedInterview(type);
-      setStep(2);
-    };
-  
-    // Step 2: Start Testing Video & Audio
-    const startTesting = async () => {
-      try {
-        const userStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-        setStream(userStream);
-        setIsTesting(true);
-        initAudioMeter(userStream);
-      } catch (error) {
-        console.error("Error accessing camera/microphone:", error);
-        alert("Please allow camera and microphone access to proceed.");
-      }
-    };
-  
-    // Audio meter
-    const initAudioMeter = (userStream) => {
-      const audioContext = new AudioContext();
-      const source = audioContext.createMediaStreamSource(userStream);
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 512;
-  
-      const dataArray = new Uint8Array(analyser.fftSize);
-      source.connect(analyser);
-  
-      const updateVolume = () => {
-        analyser.getByteTimeDomainData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-          const val = (dataArray[i] - 128) / 128.0;
-          sum += val * val;
-        }
-        const rms = Math.sqrt(sum / dataArray.length);
-        const level = Math.min(rms * 100, 100);
-        setAudioLevel(level);
-        requestAnimationFrame(updateVolume);
-      };
-      updateVolume();
-    };
-  
-    // Step 3: Start Interview Loop
-    const startInterview = () => {
-      setStep(3);
-      fetchQuestion();
-  
-      // Fetch new question every 30s
-      intervalRef.current = setInterval(() => {
-        if (questionCount.current < maxQuestions) {
-          fetchQuestion();
-        } else {
-          clearInterval(intervalRef.current);
-          setStep(4);
-        }
-      }, 10000);
-    };
-  
-    // Fetch question
-    const fetchQuestion = async () => {
-      try {
-        const response = await axios.get(`/questions?topic=${selectedInterview}`);
-        console.log("🟢 Question Fetched:", response.data.question);
-  
-        setQuestion(response.data.question); // Update question
-  
-        // Ensure question is updated before recording
-        setTimeout(() => {
-          console.log("🎤 Starting recording for:", response.data.question);
-          startRecording(response.data.question);
-        }, 500);
-      } catch (error) {
-        console.error("🔴 Error fetching question:", error);
-        setQuestion("Error fetching question. Please try again.");
-      }
-    };
-  
-    // Start Audio-Only Recording
-    const startRecording = (currentQuestion) => {
-      if (!stream) {
-        alert("Please test your camera & microphone first.");
-        return;
-      }
-  
-      const audioTrack = stream.getAudioTracks()[0];
-      if (!audioTrack) {
-        alert("No audio track found. Check your mic.");
-        return;
-      }
-  
-      const audioStream = new MediaStream([audioTrack]);
-      const recorder = new MediaRecorder(audioStream);
-      setMediaRecorder(recorder);
-      setIsRecording(true);
-      chunks.current = [];
-  
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.current.push(e.data);
-      };
-  
-      recorder.onstop = () => {
-        const blob = new Blob(chunks.current, { type: "audio/webm" });
-        questionCount.current += 1;
-        sendAudioToAPI(blob, currentQuestion);
-      };
-  
-      recorder.start();
-      setTimeout(() => {
-        if (recorder.state === "recording") {
-          recorder.stop();
-          setIsRecording(false);
-        }
-      }, 10000);
-    };
-  
-    // Upload audio
-    const sendAudioToAPI = async (audioBlob, currentQuestion) => {
-      if (!currentQuestion) {
-        console.warn("⚠️ Warning: `question` is empty! Ensure it's set before sending.");
-        return;
-      }
-  
-      const formData = new FormData();
-      formData.append("audio", audioBlob, "response.webm");
-      formData.append("question", currentQuestion);
-  
-      console.log("📤 Sending to backend:", currentQuestion);
-  
-      try {
-        const response = await axios.post("/mock-interview", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                "Authorization": `Bearer ${token}`  // Add Bearer Token here
-              },
+  const [step, setStep] = useState(1);
+  const [selectedInterview, setSelectedInterview] = useState("");
+  const [isTesting, setIsTesting] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0); // volume meter
+  const [question, setQuestion] = useState("");
+  const { token } = useContext(DataProvider);
+  const [timer, setTimer] = useState(30); // Countdown timer for each question
+  const timerRef = useRef(null);
+  const [stream, setStream] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const chunks = useRef([]);
+  const intervalRef = useRef(null);
+  const questionCount = useRef(0);
+  const maxQuestions = 20; // 10 minutes (20 questions @30s each)
 
+  const interviewOptions = [
+    "Technical Interview - Frontend Developer",
+    "Behavioral Interview - Team Lead",
+    "System Design Discussion",
+    "Problem Solving Challenge",
+    "Cultural Fit Assessment",
+  ];
+
+  useEffect(() => {
+    if (step === 3 && question) {
+      if (timerRef.current) clearInterval(timerRef.current);
+
+      setTimer(30); // Reset timer for each question
+
+      timerRef.current = setInterval(() => {
+        setTimer((prev) => {
+          if (prev === 1) {
+            clearInterval(timerRef.current);
+            return 0;
+          }
+          return prev - 1;
         });
-  
-        console.log("✅ Server response:", response.data);
-      } catch (error) {
-        console.error("❌ Error uploading audio:", error);
+      }, 1000);
+    }
+
+    return () => clearInterval(timerRef.current);
+  }, [question]);
+
+  // Step 1: Select Interview Type
+  const handleSelectInterview = (type) => {
+    setSelectedInterview(type);
+    setStep(2);
+  };
+
+  // Step 2: Start Testing Video & Audio
+  const startTesting = async () => {
+    try {
+      const userStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      setStream(userStream);
+      setIsTesting(true);
+      initAudioMeter(userStream);
+    } catch (error) {
+      console.error("Error accessing camera/microphone:", error);
+      alert("Please allow camera and microphone access to proceed.");
+    }
+  };
+
+  // Audio meter
+  const initAudioMeter = (userStream) => {
+    const audioContext = new AudioContext();
+    const source = audioContext.createMediaStreamSource(userStream);
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 512;
+
+    const dataArray = new Uint8Array(analyser.fftSize);
+    source.connect(analyser);
+
+    const updateVolume = () => {
+      analyser.getByteTimeDomainData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        const val = (dataArray[i] - 128) / 128.0;
+        sum += val * val;
       }
+      const rms = Math.sqrt(sum / dataArray.length);
+      const level = Math.min(rms * 100, 100);
+      setAudioLevel(level);
+      requestAnimationFrame(updateVolume);
     };
-  
-    // Stop Interview
-    const stopInterview = () => {
-      clearInterval(intervalRef.current);
-      if (mediaRecorder) {
-        mediaRecorder.stop();
+    updateVolume();
+  };
+
+  // Step 3: Start Interview Loop
+  const startInterview = () => {
+    setStep(3);
+    fetchQuestion();
+
+    // Fetch new question every 30s
+    intervalRef.current = setInterval(() => {
+      if (questionCount.current < maxQuestions) {
+        fetchQuestion();
+      } else {
+        clearInterval(intervalRef.current);
+        setStep(4);
+      }
+    }, 10000);
+  };
+
+  // Fetch question
+  const fetchQuestion = async () => {
+    try {
+      const response = await axios.get(`/questions?topic=${selectedInterview}`);
+      console.log("🟢 Question Fetched:", response.data.question);
+
+      setQuestion(response.data.question); // Update question
+
+      // Ensure question is updated before recording
+      setTimeout(() => {
+        console.log("🎤 Starting recording for:", response.data.question);
+        startRecording(response.data.question);
+      }, 500);
+    } catch (error) {
+      console.error("🔴 Error fetching question:", error);
+      setQuestion("Error fetching question. Please try again.");
+    }
+  };
+
+  // Start Audio-Only Recording
+  const startRecording = (currentQuestion) => {
+    if (!stream) {
+      alert("Please test your camera & microphone first.");
+      return;
+    }
+
+    const audioTrack = stream.getAudioTracks()[0];
+    if (!audioTrack) {
+      alert("No audio track found. Check your mic.");
+      return;
+    }
+
+    const audioStream = new MediaStream([audioTrack]);
+    const recorder = new MediaRecorder(audioStream);
+    setMediaRecorder(recorder);
+    setIsRecording(true);
+    chunks.current = [];
+
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.current.push(e.data);
+    };
+
+    recorder.onstop = () => {
+      const blob = new Blob(chunks.current, { type: "audio/webm" });
+      questionCount.current += 1;
+      sendAudioToAPI(blob, currentQuestion);
+    };
+
+    recorder.start();
+    setTimeout(() => {
+      if (recorder.state === "recording") {
+        recorder.stop();
         setIsRecording(false);
       }
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-      setStream(null);
-      setStep(4);
-    };
+    }, 10000);
+  };
+
+  // Upload audio
+  const sendAudioToAPI = async (audioBlob, currentQuestion) => {
+    if (!currentQuestion) {
+      console.warn(
+        "⚠️ Warning: `question` is empty! Ensure it's set before sending."
+      );
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("audio", audioBlob, "response.webm");
+    formData.append("question", currentQuestion);
+
+    console.log("📤 Sending to backend:", currentQuestion);
+
+    try {
+      const response = await axios.post("/mock-interview", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // Add Bearer Token here
+        },
+      });
+
+      console.log("✅ Server response:", response.data);
+    } catch (error) {
+      console.error("❌ Error uploading audio:", error);
+    }
+  };
+
+  // Stop Interview
+  const stopInterview = () => {
+    clearInterval(intervalRef.current);
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      setIsRecording(false);
+    }
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+    setStream(null);
+    setStep(4);
+  };
 
   return (
     <div className="flex w-screen h-screen items-center mt-10 justify-center overflow-hidden">
@@ -293,6 +315,7 @@ function Interview() {
                 <h2 className="text-lg font-bold">
                   Question {questionCount.current + 1} / {maxQuestions}
                 </h2>
+                <p className="text-red-500 text-lg font-semibold font-monst">Time Left: {timer}s</p>
                 <p className="text-center text-3xl font-bold font-monst p-4 border-2 border-black">
                   {question}
                 </p>

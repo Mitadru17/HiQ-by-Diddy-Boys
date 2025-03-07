@@ -66,7 +66,7 @@ export default function LipSync() {
       } else if (results.length === 1) {
         const detection = results[0].detection;
         console.log("Face confidence:", detection.score);
-        if (detection.score < 0.6) {
+        if (detection.score < 0.5) {
           toast.warn("Face confidence is too low! Please position yourself clearly.");
         }
       } else {
@@ -75,7 +75,7 @@ export default function LipSync() {
     };
 
     if (modelsLoaded) {
-      intervalId = setInterval(detectFaces, 200);
+      intervalId = setInterval(detectFaces, 1000);
     }
 
     return () => clearInterval(intervalId);
