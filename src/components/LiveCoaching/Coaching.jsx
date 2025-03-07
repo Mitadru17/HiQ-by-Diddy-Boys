@@ -98,40 +98,34 @@ function Coaching() {
 
       {/* Chat Window */}
       <div className="w-full max-w-3xl h-[500px] font-sans text-sm border border-b-8 border-black rounded-2xl p-4 overflow-y-auto bg-blue-50 shadow-lg">
-        {messages.length === 0 ? (
-          <p className="text-gray-500 text-center">
-            Ask Your Doubts with Our Diddy's!
-          </p>
-        ) : (
-          messages.map((msg, index) => (
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`flex items-start my-2 ${
+              msg.sender === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            {/* Show AI Logo for AI Responses (Outside Answer Box) */}
+            {msg.sender === "ai" && (
+              <img
+                src={"../Navbar/logo.webp"}
+                alt="AI Logo"
+                className="w-10 h-10 mr-2 rounded-full shadow-md"
+              />
+            )}
+
+            {/* Message Box */}
             <div
-              key={index}
-              className={`flex items-start my-2 ${
-                msg.sender === "user" ? "justify-end" : "justify-start"
+              className={`rounded-bl-lg rounded-tl-lg p-3 max-w-[80%] break-words  font-monst shadow-md ${
+                msg.sender === "user"
+                  ? "bg-blue-100 border text-black rounded-tl-lg rounded-tr-lg rounded-bl-lg"
+                  : "bg-gray-200 text-black rounded-tr-lg rounded-br-lg rounded-bl-3xl"
               }`}
             >
-              {/* Show AI Logo for AI Responses (Outside Answer Box) */}
-              {msg.sender === "ai" && (
-                <img
-                  src={"../Navbar/logo.webp"}
-                  alt="AI Logo"
-                  className="w-10 h-10 mr-2 rounded-full shadow-md"
-                />
-              )}
-
-              {/* Message Box */}
-              <div
-                className={`rounded-bl-lg rounded-tl-lg p-3 max-w-[80%] break-words  font-monst shadow-md ${
-                  msg.sender === "user"
-                    ? "bg-blue-100 border text-black rounded-tl-lg rounded-tr-lg rounded-bl-lg"
-                    : "bg-gray-200 text-black rounded-tr-lg rounded-br-lg rounded-bl-3xl"
-                }`}
-              >
-                <p className="font-monst">{msg.text}</p>
-              </div>
+              <p className="font-monst">{msg.text}</p>
             </div>
-          ))
-        )}
+          </div>
+        ))}
 
         {loading && (
           <div className="flex items-start my-2 justify-start">
