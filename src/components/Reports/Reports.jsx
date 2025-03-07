@@ -14,6 +14,7 @@ function Reports() {
   const [activeTab, setActiveTab] = useState('overview');
   const location = useLocation();
   const newTestData = location.state?.testData;
+  const aiInterviewData = location.state?.aiInterviewData;
 
   useEffect(() => {
     fetchReports();
@@ -268,6 +269,38 @@ function Reports() {
           </div>
         </div>
         
+        <button 
+          onClick={() => fetchReports()} 
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          View All Reports
+        </button>
+      </div>
+    );
+  }
+
+  // If we have AI interview data from a just-completed interview, show it
+  if (aiInterviewData) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">AI Interview Results</h1>
+        <div className="bg-white shadow-lg rounded-lg p-6 mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Interview Summary</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-green-100 p-4 rounded-lg text-center">
+              <p className="text-lg font-medium">Accuracy</p>
+              <p className="text-3xl font-bold">{aiInterviewData.accuracy}%</p>
+            </div>
+            <div className="bg-blue-100 p-4 rounded-lg text-center">
+              <p className="text-lg font-medium">Question</p>
+              <p className="text-xl">{aiInterviewData.question}</p>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Your Answer</h3>
+            <p className="text-gray-700">{aiInterviewData.transcription}</p>
+          </div>
+        </div>
         <button 
           onClick={() => fetchReports()} 
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
