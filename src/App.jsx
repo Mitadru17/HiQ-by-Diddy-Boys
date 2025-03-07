@@ -18,8 +18,8 @@ import { ToastContainer } from "react-toastify";
 export const DataProvider = createContext();
 
 function App() {
-  // axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
-  axios.defaults.baseURL = "http://localhost:3000/";
+  axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
+  // axios.defaults.baseURL = "http://localhost:3000/";
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [userData, setUserData] = useState([]);
   const fetchUserData = async () => {
