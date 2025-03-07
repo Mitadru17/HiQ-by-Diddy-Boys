@@ -116,18 +116,11 @@ function Coaching() {
         )}
 
         {loading && (
-          <div className="flex items-start my-2 justify-start">
-            <img
-              src={"../Navbar/logo.webp"}
-              alt="AI Logo"
-              className="w-10 h-10 mr-2 rounded-full shadow-md"
-            />
-            <div className="bg-gray-200 text-black rounded-tr-lg rounded-br-lg rounded-bl-3xl p-4 max-w-[80%] shadow-md">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-              </div>
+          <div className="bg-gray-200 text-black rounded-tr-lg rounded-br-lg rounded-bl-3xl p-4 max-w-[80%] shadow-md w-fit">
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
             </div>
           </div>
         )}
