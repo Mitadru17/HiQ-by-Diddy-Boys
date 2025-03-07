@@ -106,8 +106,8 @@ function Resume() {
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl h-[50vh] ">
           {/* Card 1: Score & Progress */}
           <div className="p-6 bg-gray-100 border border-gray-300 w-[10vw] shadow-lg text-center  h-[20vh] rounded-full overflow-hidden" >
-            <h2 className="text-sm font-bold text-gray-800 mt-5">Resume Score</h2>
-            <p className="text-xl font-semibold text-gray-700 mt-2">
+            <h2 className="text-xl font-bold text-gray-800 mt-5">Resume Score</h2>
+            <p className="font-monst font-bold text-gray-700 mt-2">
               {analysisResult.score}/100
             </p>
             <div className="w-full bg-gray-300 rounded-full h-4 mt-2 ">
@@ -142,7 +142,7 @@ function Resume() {
             {analysisResult.grammar_issues.length > 0 ? (
               <ul className="list-disc list-inside text-gray-700 mt-2">
                 {analysisResult.grammar_issues.map((issue, index) => (
-                  <li key={index}>{issue}</li>
+                  <li className="font-monst font-bold" key={index}>{issue}</li>
                 ))}
               </ul>
             ) : (
@@ -155,7 +155,7 @@ function Resume() {
             {analysisResult.missing_keywords.length > 0 ? (
               <ul className="list-disc list-inside text-gray-700 mt-2 h-[80vh] overflow-y-auto">
                 {analysisResult.missing_keywords.map((keyword, index) => (
-                  <li key={index}>{keyword}</li>
+                  <li className="font-monst font-bold" key={index}>{keyword}</li>
                 ))}
               </ul>
             ) : (
