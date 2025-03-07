@@ -105,7 +105,7 @@ function Resume() {
       {analysisResult && (
         <div className="mt-40 flex justify-center items-center gap-10 w-full max-w-[90%] mx-auto">
           {/* Card 2: Improvements - Left Side */}
-          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg">
+          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl">
             <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
             <ul className="list-disc list-inside text-gray-700 mt-4">
               {analysisResult.improvements.map((improve, index) => (
@@ -115,7 +115,7 @@ function Resume() {
           </div>
 
           {/* Card 1: Score & Progress - Center */}
-          <div className="w-[220px] h-[220px] p-6 bg-gray-100 border border-gray-300 shadow-lg text-center rounded-full overflow-hidden flex flex-col justify-center items-center" >
+          <div className="w-[220px] h-[220px] p-6 bg-gray-100 border border-gray-300 shadow-lg text-center rounded-full overflow-hidden flex flex-col justify-center items-center transform transition-all duration-300 hover:scale-95 hover:shadow-xl" >
             <h2 className="text-xl font-bold text-gray-800">Resume Score</h2>
             <p className="font-monst font-bold text-3xl text-gray-700 mt-2">
               {analysisResult.score}/100
@@ -137,7 +137,7 @@ function Resume() {
           </div>
 
           {/* Card 3: Grammar & Missing Keywords - Right Side */}
-          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg">
+          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl">
             <h2 className="text-xl font-bold text-red-500">Grammar Issues ❌</h2>
             {analysisResult.grammar_issues.length > 0 ? (
               <ul className="list-disc list-inside text-gray-700 mt-4">
