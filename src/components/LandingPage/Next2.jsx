@@ -3,7 +3,7 @@ import Threads from "../utils/Threads";
 
 function Next2() {
   return (
-    <div className="border-b-4 border-black p-4">
+    <div className="support border-b-4 border-black p-4">
       <h1 className="text-[60px]">Live Ai Powered Chat Support</h1>
       <div style={{ width: "100%", height: "500px", position: "relative" }}>
         {/* AI Image */}

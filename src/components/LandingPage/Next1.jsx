@@ -6,7 +6,7 @@ function Next1() {
   const containerRef = useRef(null);
   const items = [
     {
-        image: './Next/realtime.png',
+        image: './Next/realtime.jpg',
         link: 'https://google.com/',
         title: 'Real-Time Interview',
         description: ''
@@ -34,7 +34,7 @@ function Next1() {
   return (
     <div
       ref={containerRef}
-      className="relative w-screen h-screen overflow-hidden"
+      className="feature relative w-screen h-screen overflow-hidden"
     >
       {/* Crosshair (Full Screen) */}
       <Crosshair containerRef={containerRef} color="#000" />

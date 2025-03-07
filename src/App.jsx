@@ -22,6 +22,7 @@ function App() {
   // axios.defaults.baseURL = "http://localhost:3000/";
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [userData, setUserData] = useState([]);
+  const [ischat,setChat] = useState(false)
   const fetchUserData = async () => {
     try {
       const response = await axios.get(`/auth/user-data`, {
@@ -44,7 +45,7 @@ function App() {
     }
   }, [token]);
   return (
-    <DataProvider.Provider value={{ token, setToken }}>
+    <DataProvider.Provider value={{ token, setToken,ischat,setChat }}>
       <BrowserRouter>
       <ToastContainer/>
         <Navbar />
