@@ -78,9 +78,9 @@ function Simulation() {
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
                 >
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
+                  <option classname="font-monst">Beginner</option>
+                  <option classname="font-monst">Intermediate</option>
+                  <option classname="font-monst">Advanced</option>
                 </select>
               </div>
 
@@ -104,9 +104,9 @@ function Simulation() {
                   value={focusArea}
                   onChange={(e) => setFocusArea(e.target.value)}
                 >
-                  <option>Technical Skills</option>
-                  <option>Soft Skills</option>
-                  <option>Leadership</option>
+                  <option classname="font-monst">Technical Skills</option>
+                  <option classname="font-monst">Soft Skills</option>
+                  <option classname="font-monst">Leadership</option>
                 </select>
               </div>
 
