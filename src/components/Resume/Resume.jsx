@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoReturnDownForward, IoReturnUpBack } from "react-icons/io5";
 import Threads from "../utils/Threads";
 import axios from "axios";
@@ -9,7 +9,23 @@ function Resume() {
   const [uploading, setUploading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null); // Store API response
   const [suggestedCompanies, setSuggestedCompanies] = useState([]);
+  const [scrollPositions, setScrollPositions] = useState({ improvements: 0, grammar: 0, companies: 0 });
   const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (!analysisResult) return;
+
+    const scrollInterval = setInterval(() => {
+      setScrollPositions(prev => ({
+        improvements: (prev.improvements + 1) % 2,
+        grammar: (prev.grammar + 1) % 2,
+        companies: (prev.companies + 1) % 2
+      }));
+    }, 5000); // Scroll every 5 seconds
+
+    return () => clearInterval(scrollInterval);
+  }, [analysisResult]);
 
   // Handle file selection
   const handleFileChange = (event) => {
@@ -180,57 +196,77 @@ function Resume() {
             {/* Three Cards Container */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 w-full">
               {/* Card 1: Improvements */}
-              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
-                <h2 className="text-2xl font-bold text-yellow-600 mb-6">Improvements ✍️</h2>
-                <ul className="list-disc list-inside text-gray-700 space-y-4">
-                  {analysisResult.improvements.map((improve, index) => (
-                    <li className="font-monst font-bold" key={index}>{improve}</li>
-                  ))}
-                </ul>
+              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-[500px] relative">
+                <h2 className="text-2xl font-bold text-yellow-600 mb-6 sticky top-0 bg-white z-10">Improvements ✍️</h2>
+                <div className="h-[400px] overflow-hidden relative">
+                  <ul className="list-disc list-inside text-gray-700 space-y-4 transition-transform duration-1000"
+                      style={{
+                        transform: `translateY(-${scrollPositions.improvements * 50}%)`,
+                      }}>
+                    {[...analysisResult.improvements, ...analysisResult.improvements].map((improve, index) => (
+                      <li className="font-monst font-bold py-2" key={index}>{improve}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
               </div>
 
               {/* Card 2: Grammar Issues */}
-              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
-                <h2 className="text-2xl font-bold text-red-500 mb-6">Grammar Issues ❌</h2>
-                {analysisResult.grammar_issues.length > 0 ? (
-                  <ul className="list-disc list-inside text-gray-700 space-y-4">
-                    {analysisResult.grammar_issues.map((issue, index) => (
-                      <li className="font-monst font-bold" key={index}>{issue}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-600">No grammar issues found 🎉</p>
-                )}
+              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-[500px] relative">
+                <h2 className="text-2xl font-bold text-red-500 mb-6 sticky top-0 bg-white z-10">Grammar Issues ❌</h2>
+                <div className="h-[400px] overflow-hidden relative">
+                  <div className="space-y-6 transition-transform duration-1000"
+                       style={{
+                         transform: `translateY(-${scrollPositions.grammar * 50}%)`,
+                       }}>
+                    {analysisResult.grammar_issues.length > 0 ? (
+                      <ul className="list-disc list-inside text-gray-700 space-y-4">
+                        {[...analysisResult.grammar_issues, ...analysisResult.grammar_issues].map((issue, index) => (
+                          <li className="font-monst font-bold py-2" key={index}>{issue}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-600">No grammar issues found 🎉</p>
+                    )}
 
-                <h2 className="text-2xl font-bold text-purple-600 mt-8 mb-6">
-                  Missing Keywords 🔍
-                </h2>
-                {analysisResult.missing_keywords.length > 0 ? (
-                  <ul className="list-disc list-inside text-gray-700 space-y-4">
-                    {analysisResult.missing_keywords.map((keyword, index) => (
-                      <li className="font-monst font-bold" key={index}>{keyword}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-600">No missing keywords detected ✅</p>
-                )}
+                    <h2 className="text-2xl font-bold text-purple-600 mt-8 mb-6 sticky top-0 bg-white">
+                      Missing Keywords 🔍
+                    </h2>
+                    {analysisResult.missing_keywords.length > 0 ? (
+                      <ul className="list-disc list-inside text-gray-700 space-y-4">
+                        {[...analysisResult.missing_keywords, ...analysisResult.missing_keywords].map((keyword, index) => (
+                          <li className="font-monst font-bold py-2" key={index}>{keyword}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-600">No missing keywords detected ✅</p>
+                    )}
+                  </div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
               </div>
 
               {/* Card 3: Suggested Companies */}
-              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
-                <h2 className="text-2xl font-bold text-blue-600 mb-6">Suggested Companies 🎯</h2>
-                <ul className="space-y-6">
-                  {suggestedCompanies.map((company, index) => {
-                    const [name, ...descParts] = company.split(" - ");
-                    const description = descParts.join(" - ");
-                    return (
-                      <li key={index} className="pb-4 last:pb-0">
-                        <h3 className="font-monst font-bold text-lg text-gray-800 mb-2">{name}</h3>
-                        <p className="font-monst text-gray-600 leading-relaxed">{description}</p>
-                      </li>
-                    );
-                  })}
-                </ul>
+              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-[500px] relative">
+                <h2 className="text-2xl font-bold text-blue-600 mb-6 sticky top-0 bg-white z-10">Suggested Companies 🎯</h2>
+                <div className="h-[400px] overflow-hidden relative">
+                  <ul className="space-y-6 transition-transform duration-1000"
+                      style={{
+                        transform: `translateY(-${scrollPositions.companies * 50}%)`,
+                      }}>
+                    {[...suggestedCompanies, ...suggestedCompanies].map((company, index) => {
+                      const [name, ...descParts] = company.split(" - ");
+                      const description = descParts.join(" - ");
+                      return (
+                        <li key={index} className="py-2">
+                          <h3 className="font-monst font-bold text-lg text-gray-800 mb-2">{name}</h3>
+                          <p className="font-monst text-gray-600 leading-relaxed">{description}</p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
               </div>
             </div>
           </div>
