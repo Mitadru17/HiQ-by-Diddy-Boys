@@ -8,6 +8,8 @@ function Resume() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null); // Store API response
+  const [suggestedCompanies, setSuggestedCompanies] = useState([]);
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
   // Handle file selection
   const handleFileChange = (event) => {
@@ -29,7 +31,52 @@ function Resume() {
     }
   };
 
-  // Upload file to API
+  // Function to get company suggestions from Gemini
+  const getCompanySuggestions = async (resumeData) => {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [
+                  {
+                    text: `Based on the following resume analysis, suggest 5 suitable companies where this candidate should apply. Consider the missing keywords as areas for growth. Resume Analysis: ${JSON.stringify(
+                      resumeData
+                    )}`,
+                  },
+                ],
+              },
+            ],
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to get company suggestions");
+      }
+
+      const data = await response.json();
+      const suggestions = data.candidates[0].content.parts[0].text
+        .split("\n")
+        .filter((line) => line.trim())
+        .slice(0, 5);
+      setSuggestedCompanies(suggestions);
+    } catch (error) {
+      console.error("Error getting company suggestions:", error);
+      setSuggestedCompanies([
+        "Unable to generate company suggestions at this time.",
+      ]);
+    }
+  };
+
+  // Modify handleUpload to include company suggestions
   const handleUpload = async () => {
     if (!selectedFile) {
       alert("Please select a file before uploading.");
@@ -41,21 +88,22 @@ function Resume() {
 
     try {
       setUploading(true);
-      setAnalysisResult(null); // Clear previous results
+      setAnalysisResult(null);
 
-      // API Call (Replace with your backend API)
       const response = await axios.post("/analyze-resume", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      setUploading(false);
-      setAnalysisResult(response.data); // Store API response
+      setAnalysisResult(response.data);
+      // Get company suggestions after resume analysis
+      await getCompanySuggestions(response.data);
     } catch (error) {
-      setUploading(false);
       console.error("Error uploading file:", error);
       alert("Failed to upload. Please try again.");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -101,9 +149,9 @@ function Resume() {
         </div>
       )}
 
-      {/* Resume Analysis Report (3 Cards) */}
+      {/* Resume Analysis Report (4 Cards) */}
       {analysisResult && (
-        <div className="mt-40 flex justify-center items-center gap-10 w-full max-w-[90%] mx-auto">
+        <div className="mt-40 flex justify-center items-start gap-10 w-full max-w-[90%] mx-auto flex-wrap">
           {/* Card 2: Improvements - Left Side */}
           <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl">
             <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
@@ -115,7 +163,7 @@ function Resume() {
           </div>
 
           {/* Card 1: Score & Progress - Center */}
-          <div className="w-[220px] h-[220px] p-6 bg-gray-100 border border-gray-300 shadow-lg text-center rounded-full overflow-hidden flex flex-col justify-center items-center transform transition-all duration-300 hover:scale-95 hover:shadow-xl" >
+          <div className="w-[220px] h-[220px] p-6 bg-gray-100 border border-gray-300 shadow-lg text-center rounded-full overflow-hidden flex flex-col justify-center items-center transform transition-all duration-300 hover:scale-95 hover:shadow-xl">
             <h2 className="text-xl font-bold text-gray-800">Resume Score</h2>
             <p className="font-monst font-bold text-3xl text-gray-700 mt-2">
               {analysisResult.score}/100
@@ -161,6 +209,16 @@ function Resume() {
             ) : (
               <p className="text-gray-600">No missing keywords detected ✅</p>
             )}
+          </div>
+
+          {/* Card 4: Suggested Companies */}
+          <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl mt-6">
+            <h2 className="text-xl font-bold text-blue-600">Suggested Companies 🎯</h2>
+            <ul className="list-disc list-inside text-gray-700 mt-4">
+              {suggestedCompanies.map((company, index) => (
+                <li className="font-monst font-bold mb-2" key={index}>{company}</li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
