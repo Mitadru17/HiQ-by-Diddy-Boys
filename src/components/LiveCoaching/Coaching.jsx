@@ -9,6 +9,22 @@ function Coaching() {
   const [loading, setLoading] = useState(false);
   const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
+  // Add custom keyframes style
+  const dotStyle = {
+    animation: 'dotWave 1.3s linear infinite',
+  };
+
+  const keyframes = `
+    @keyframes dotWave {
+      0%, 60%, 100% {
+        transform: initial;
+      }
+      30% {
+        transform: translateY(-10px);
+      }
+    }
+  `;
+
   // Function to handle sending user messages
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -117,7 +133,23 @@ function Coaching() {
           ))
         )}
 
-        {loading && <p className="text-gray-500 text-center mt-2">Typing...</p>}
+        {loading && (
+          <div className="flex items-start my-2 justify-start">
+            <img
+              src={"../Navbar/logo.webp"}
+              alt="AI Logo"
+              className="w-10 h-10 mr-2 rounded-full shadow-md"
+            />
+            <div className="bg-gray-200 text-black rounded-tr-lg rounded-br-lg rounded-bl-3xl p-3 shadow-md">
+              <style>{keyframes}</style>
+              <div className="flex space-x-2">
+                <div className="w-2.5 h-2.5 bg-gray-600 rounded-full" style={{...dotStyle, animationDelay: '0s'}}></div>
+                <div className="w-2.5 h-2.5 bg-gray-600 rounded-full" style={{...dotStyle, animationDelay: '0.2s'}}></div>
+                <div className="w-2.5 h-2.5 bg-gray-600 rounded-full" style={{...dotStyle, animationDelay: '0.4s'}}></div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Input Box */}
