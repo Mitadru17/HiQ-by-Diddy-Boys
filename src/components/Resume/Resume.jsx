@@ -103,14 +103,24 @@ function Resume() {
 
       {/* Resume Analysis Report (3 Cards) */}
       {analysisResult && (
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl h-[50vh] ">
-          {/* Card 1: Score & Progress */}
-          <div className="p-6 bg-gray-100 border border-gray-300 w-[10vw] shadow-lg text-center  h-[20vh] rounded-full overflow-hidden" >
-            <h2 className="text-xl font-bold text-gray-800 mt-5">Resume Score</h2>
+        <div className="mt-10 flex justify-center items-start gap-6 w-full max-w-7xl">
+          {/* Card 2: Improvements - Left Side */}
+          <div className="w-[35%] p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
+            <ul className="list-disc list-inside text-gray-700 mt-2">
+              {analysisResult.improvements.map((improve, index) => (
+                <li className="font-monst font-bold" key={index}>{improve}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Card 1: Score & Progress - Center */}
+          <div className="w-[200px] p-6 bg-gray-100 border border-gray-300 shadow-lg text-center rounded-full overflow-hidden self-start" >
+            <h2 className="text-xl font-bold text-gray-800 mt-2">Resume Score</h2>
             <p className="font-monst font-bold text-gray-700 mt-2">
               {analysisResult.score}/100
             </p>
-            <div className="w-full bg-gray-300 rounded-full h-4 mt-2 ">
+            <div className="w-full bg-gray-300 rounded-full h-4 mt-2">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{
@@ -126,18 +136,8 @@ function Resume() {
             </div>
           </div>
 
-          {/* Card 2: Improvements */}
-          <div className="p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-lg h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
-            <ul className="list-disc list-inside text-gray-700 mt-2">
-              {analysisResult.improvements.map((improve, index) => (
-                <li className=" font-monst font-bold" key={index}>{improve}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Card 3: Grammar & Missing Keywords */}
-          <div className="p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-lg h-[80vh] overflow-y-auto">
+          {/* Card 3: Grammar & Missing Keywords - Right Side */}
+          <div className="w-[35%] p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-lg">
             <h2 className="text-xl font-bold text-red-500">Grammar Issues ❌</h2>
             {analysisResult.grammar_issues.length > 0 ? (
               <ul className="list-disc list-inside text-gray-700 mt-2">
@@ -153,7 +153,7 @@ function Resume() {
               Missing Keywords 🔍
             </h2>
             {analysisResult.missing_keywords.length > 0 ? (
-              <ul className="list-disc list-inside text-gray-700 mt-2 h-[80vh] overflow-y-auto">
+              <ul className="list-disc list-inside text-gray-700 mt-2">
                 {analysisResult.missing_keywords.map((keyword, index) => (
                   <li className="font-monst font-bold" key={index}>{keyword}</li>
                 ))}
