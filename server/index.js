@@ -10,6 +10,7 @@ const { analyzeResume } = require("./resumeAnalyzer");
 const { analyzeQuestion, analyzeInterview } = require("./questionAnalyzer");
 const { connect } = require("./models/conn");
 const authRouter = require("./routes/auth");
+const simRouter = require("./routes/test");
 const { Interview } = require("./models/model");
 const verifyToken = require("./config/jwtVerify");
 const app = express();
@@ -91,8 +92,7 @@ app.get("/questions", async (req, res) => {
   }
 });
 
-// ----------- 3) Auth Router -----------
-app.use("/auth", authRouter);
+
 
 // ----------- 4) Multer for Audio Uploads (memoryStorage) -----------
 const audioUpload = multer({ storage: multer.memoryStorage() });
@@ -169,6 +169,11 @@ app.use((err, req, res, next) => {
     details: err.message,
   });
 });
+
+
+// ----------- 3) Auth Router -----------
+app.use("/auth", authRouter);
+app.use("/simulate", simRouter);
 
 // Start the server
 app.listen(PORT, () => {

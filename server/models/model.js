@@ -38,22 +38,37 @@ const aiFeedbackSchema = new mongoose.Schema({
 const AIFeedback = mongoose.model("AIFeedback", aiFeedbackSchema);
 
 const interviewSchema = new mongoose.Schema({
-    email: { type: String, required: true },
-    questions: [String],
-    answerur: [String],
-    accuracy: String,
-  });
-  
-  const Interview = mongoose.model("Interview", interviewSchema);
-  
+  email: { type: String, required: true },
+  questions: [String],
+  answerur: [String],
+  accuracy: String,
+});
 
+const Interview = mongoose.model("Interview", interviewSchema);
 
+const simulationSchema = new mongoose.Schema({
+  email: { type: String, required: true },
+  tests: [
+    {
+      testName: { type: String, required: true },
+      questions: [
+        {
+          questionText: { type: String, required: true },
+          userAnswer: { type: String, required: true },
+          correctAnswer: { type: String, required: true },
+          isCorrect: { type: Boolean, required: true },
+        },
+      ],
+    },
+  ],
+});
+
+const Simulation = mongoose.model("Simulation", simulationSchema);
 
 module.exports = {
-
- 
   Resume,
   InterviewSession,
   AIFeedback,
   Interview,
+  Simulation,
 };
