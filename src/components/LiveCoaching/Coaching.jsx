@@ -15,12 +15,8 @@ function Coaching() {
 
     const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
-    setInput(""); // Clear input after sending
+    setInput("");
     setLoading(true);
-
-    // Add a placeholder AI message to update text dynamically
-    const aiMessage = { sender: "ai", text: "" };
-    setMessages((prev) => [...prev, aiMessage]);
 
     try {
       const response = await fetch(
@@ -31,7 +27,20 @@ function Coaching() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: input }] }],
+            contents: [
+              {
+                parts: [
+                  {
+                    text: input
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.9,
+              topK: 1,
+              topP: 1
+            }
           }),
         }
       );
@@ -41,28 +50,34 @@ function Coaching() {
       }
 
       const data = await response.json();
-      const fullText =
-        data.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "Sorry, I couldn't understand that.";
+      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
+      
+      // Add AI message with empty text initially
+      const aiMessage = { sender: "ai", text: "" };
+      setMessages((prev) => [...prev, aiMessage]);
 
-      // Simulate word-by-word streaming effect
+      // Simulate word-by-word typing effect
       let currentText = "";
-      for (const word of fullText.split(" ")) {
+      const words = aiResponse.split(" ");
+      
+      for (const word of words) {
         currentText += word + " ";
-        await new Promise((resolve) => setTimeout(resolve, 50)); // Adjust delay for better typing effect
-
-        // Update the last AI message dynamically
         setMessages((prev) => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1].text = currentText;
+          newMessages[newMessages.length - 1] = {
+            ...newMessages[newMessages.length - 1],
+            text: currentText.trim()
+          };
           return newMessages;
         });
+        await new Promise((resolve) => setTimeout(resolve, 50));
       }
+
     } catch (error) {
       console.error("Error fetching response:", error);
       setMessages((prev) => [
-        ...prev.slice(0, -1),
-        { sender: "ai", text: "Error fetching response. Try again later." },
+        ...prev,
+        { sender: "ai", text: "Sorry, I encountered an error. Please try again." }
       ]);
     } finally {
       setLoading(false);
