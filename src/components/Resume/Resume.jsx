@@ -47,9 +47,11 @@ function Resume() {
                 role: "user",
                 parts: [
                   {
-                    text: `Based on the following resume analysis, suggest 5 suitable companies where this candidate should apply. Consider the missing keywords as areas for growth. Resume Analysis: ${JSON.stringify(
-                      resumeData
-                    )}`,
+                    text: `Based on the following resume analysis, suggest 5 suitable companies for the candidate. For each company, provide:
+                    1. Company name
+                    2. A brief 1-2 line description highlighting why it's a good fit based on their skills or areas for growth
+                    Format each suggestion as: "Company Name - Description"
+                    Resume Analysis: ${JSON.stringify(resumeData)}`,
                   },
                 ],
               },
@@ -151,7 +153,7 @@ function Resume() {
 
       {/* Resume Analysis Report (4 Cards) */}
       {analysisResult && (
-        <div className="w-full max-w-7xl mx-auto px-4">
+        <div className="w-full max-w-[95%] mx-auto px-4">
           <div className="flex flex-col items-center">
             {/* Score Card - Top Center */}
             <div className="w-[220px] h-[220px] p-6 bg-white border border-gray-300 shadow-lg text-center rounded-full overflow-hidden flex flex-col justify-center items-center transform transition-all duration-300 hover:scale-95 hover:shadow-xl mb-10">
@@ -176,37 +178,37 @@ function Resume() {
             </div>
 
             {/* Three Cards Container */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 w-full">
               {/* Card 1: Improvements */}
-              <div className="p-8 bg-white border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
-                <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
-                <ul className="list-disc list-inside text-gray-700 mt-4">
+              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
+                <h2 className="text-2xl font-bold text-yellow-600 mb-6">Improvements ✍️</h2>
+                <ul className="list-disc list-inside text-gray-700 space-y-4">
                   {analysisResult.improvements.map((improve, index) => (
-                    <li className="font-monst font-bold mb-2" key={index}>{improve}</li>
+                    <li className="font-monst font-bold" key={index}>{improve}</li>
                   ))}
                 </ul>
               </div>
 
               {/* Card 2: Grammar Issues */}
-              <div className="p-8 bg-white border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
-                <h2 className="text-xl font-bold text-red-500">Grammar Issues ❌</h2>
+              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
+                <h2 className="text-2xl font-bold text-red-500 mb-6">Grammar Issues ❌</h2>
                 {analysisResult.grammar_issues.length > 0 ? (
-                  <ul className="list-disc list-inside text-gray-700 mt-4">
+                  <ul className="list-disc list-inside text-gray-700 space-y-4">
                     {analysisResult.grammar_issues.map((issue, index) => (
-                      <li className="font-monst font-bold mb-2" key={index}>{issue}</li>
+                      <li className="font-monst font-bold" key={index}>{issue}</li>
                     ))}
                   </ul>
                 ) : (
                   <p className="text-gray-600">No grammar issues found 🎉</p>
                 )}
 
-                <h2 className="text-xl font-bold text-purple-600 mt-6">
+                <h2 className="text-2xl font-bold text-purple-600 mt-8 mb-6">
                   Missing Keywords 🔍
                 </h2>
                 {analysisResult.missing_keywords.length > 0 ? (
-                  <ul className="list-disc list-inside text-gray-700 mt-4">
+                  <ul className="list-disc list-inside text-gray-700 space-y-4">
                     {analysisResult.missing_keywords.map((keyword, index) => (
-                      <li className="font-monst font-bold mb-2" key={index}>{keyword}</li>
+                      <li className="font-monst font-bold" key={index}>{keyword}</li>
                     ))}
                   </ul>
                 ) : (
@@ -215,12 +217,19 @@ function Resume() {
               </div>
 
               {/* Card 3: Suggested Companies */}
-              <div className="p-8 bg-white border border-gray-300 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
-                <h2 className="text-xl font-bold text-blue-600">Suggested Companies 🎯</h2>
-                <ul className="list-disc list-inside text-gray-700 mt-4">
-                  {suggestedCompanies.map((company, index) => (
-                    <li className="font-monst font-bold mb-2" key={index}>{company}</li>
-                  ))}
+              <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-full">
+                <h2 className="text-2xl font-bold text-blue-600 mb-6">Suggested Companies 🎯</h2>
+                <ul className="space-y-6">
+                  {suggestedCompanies.map((company, index) => {
+                    const [name, ...descParts] = company.split(" - ");
+                    const description = descParts.join(" - ");
+                    return (
+                      <li key={index} className="pb-4 last:pb-0">
+                        <h3 className="font-monst font-bold text-lg text-gray-800 mb-2">{name}</h3>
+                        <p className="font-monst text-gray-600 leading-relaxed">{description}</p>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
