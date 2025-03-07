@@ -1,5 +1,4 @@
-const { Simulation } = require("../models/model");
-
+const { Simulation, Interview } = require("../models/model");
 
 // POST API to submit a test
 exports.testSubmit = async (req, res) => {
@@ -48,5 +47,38 @@ exports.testSubmit = async (req, res) => {
   } catch (error) {
     console.error("❌ Error submitting test:", error);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.getReports = async (req, res) => {
+  try {
+    if (!req.user || !req.user.email) {
+      return res
+        .status(400)
+        .json({ success: false, error: "User email is required" });
+    }
+
+    const email = req.user.email;
+
+    // Fetch all interview records for the user
+    const interviews = await Interview.find({ email });
+
+    // Fetch all simulation records & return only the `tests` array
+    const simulations = await Simulation.find({ email }, "tests");
+
+    if (!interviews.length && !simulations.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No reports found for this user" });
+    }
+
+    res.status(200).json({
+      success: true,
+      interviews,
+      simulations, // Only returning tests array
+    });
+  } catch (error) {
+    console.error("❌ Error fetching reports:", error);
+    res.status(500).json({ success: false, error: "Server error" });
   }
 };
