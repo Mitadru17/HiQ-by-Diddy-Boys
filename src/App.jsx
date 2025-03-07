@@ -14,11 +14,12 @@ import axios from "axios";
 import Signup from "./components/Auth/Signup";
 import Login from "./components/Auth/Login";
 import React, { createContext, useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
 export const DataProvider = createContext();
 
 function App() {
-  axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
-  // axios.defaults.baseURL = "http://localhost:3000/";
+  // axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
+  axios.defaults.baseURL = "http://localhost:3000/";
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [userData, setUserData] = useState([]);
   const fetchUserData = async () => {
@@ -45,6 +46,7 @@ function App() {
   return (
     <DataProvider.Provider value={{ token, setToken }}>
       <BrowserRouter>
+      <ToastContainer/>
         <Navbar />
         <Routes>
           {/* Landing Page */}
