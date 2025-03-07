@@ -103,7 +103,7 @@ function Resume() {
 
       {/* Resume Analysis Report (3 Cards) */}
       {analysisResult && (
-        <div className="mt-32 flex justify-center items-center gap-10 w-full max-w-[90%] mx-auto">
+        <div className="mt-40 flex justify-center items-center gap-10 w-full max-w-[90%] mx-auto">
           {/* Card 2: Improvements - Left Side */}
           <div className="w-[40%] p-8 bg-gray-100 border border-gray-300 rounded-lg shadow-lg">
             <h2 className="text-xl font-bold text-yellow-600">Improvements ✍️</h2>
