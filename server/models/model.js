@@ -38,28 +38,20 @@ const aiFeedbackSchema = new mongoose.Schema({
 const AIFeedback = mongoose.model("AIFeedback", aiFeedbackSchema);
 
 const interviewSchema = new mongoose.Schema({
-  user: { type: String, required: true },
-  difficulty: {
-    type: String,
-    enum: ["Beginner", "Intermediate", "Advanced"],
-    required: true,
-  },
-  duration: { type: Number, enum: [15, 30, 45], required: true },
-  focusArea: {
-    type: String,
-    enum: ["Leadership", "Soft Skills", "Technical Skills"],
-    required: true,
-  },
-  questions: [String],
-  responses: [String],
-  feedback: String,
-});
+    email: { type: String, required: true },
+    questions: [String],
+    answerur: [String],
+    accuracy: String,
+  });
+  
+  const Interview = mongoose.model("Interview", interviewSchema);
+  
 
-const Interview = mongoose.model("Interview", interviewSchema);
+
 
 module.exports = {
-  connectDB,
-  User,
+
+ 
   Resume,
   InterviewSession,
   AIFeedback,

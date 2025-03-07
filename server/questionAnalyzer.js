@@ -19,7 +19,7 @@ exports.analyzeQuestion = async (topic) => {
 
       1. Question according to this topic for oral interviews only verbal answer expected from user.
       2. Question should not be more than 30 words.
-      3. unique question asked in interview for this topic.
+      3. unique question create in realtime.
 
       Format your response as valid JSON with the key 'question'.
     `;
@@ -60,6 +60,76 @@ const handleResponse = (responseText) => {
     } catch (error) {
       console.error("Error parsing the response:", error);
       return { error: "Failed to parse the response." };
+    }
+  };
+  
+
+  exports.analyzeInterview = async (que,trans) => {
+    try {
+      // Define the generative model (gemini-1.5-flash or similar)
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  
+      // Construct the prompt for the AI
+      const prompt = `
+      You are an AI evaluator. Compare the following interview question and answer:
+      
+      **Question:** ${que}
+      **Answer:** ${trans}
+      
+      Analyze how accurate the response is and return a JSON object.
+      
+      Your response **MUST** be **valid JSON** and **nothing else**.
+      
+      Format your response as follows:
+      {
+        "accuracy": 85
+      }
+      `;
+      
+  
+      // Generate content from the model based on the prompt
+      const result = await model.generateContent(prompt);
+  
+      // Get the response text (it should be a JSON string)
+      const responseText = result.response.text();
+  
+      // Call handleResponse with the response text
+      return await handleAnswer(responseText);
+    } catch (error) {
+      console.error("Error analyzing question:", error);
+      return {
+        error: "Failed to analyze the question. Please try again.",
+      };
+    }
+  };
+
+
+  const handleAnswer = (responseText) => {
+    try {
+
+  
+      // Ensure the response is a valid JSON
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);  // Extract JSON part
+      if (!jsonMatch) {
+        console.error("❌ No JSON detected in response!");
+        return { error: "AI response is not in JSON format." };
+      }
+  
+      // Parse JSON response safely
+      const parsedResponse = JSON.parse(jsonMatch[0]);
+  
+      // Ensure the key 'accuracy' exists
+      if (!parsedResponse || !parsedResponse.accuracy) {
+        console.error("❌ 'accuracy' key missing in response:", parsedResponse);
+        return { error: "Accuracy data not found in AI response." };
+      }
+  
+      console.log("✅ Parsed AI Response:", parsedResponse);
+      return { accuracy: parsedResponse.accuracy };
+  
+    } catch (error) {
+      console.error("❌ Error parsing AI response:", error);
+      return { error: "Failed to parse the AI response." };
     }
   };
   
