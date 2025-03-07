@@ -15,11 +15,12 @@ import Signup from "./components/Auth/Signup";
 import Login from "./components/Auth/Login";
 import React, { createContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import MCQTest from "./components/Simulation/MCQtes";
 export const DataProvider = createContext();
 
 function App() {
-  axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
-  // axios.defaults.baseURL = "http://localhost:3000/";
+  // axios.defaults.baseURL = "https://resume-analyzer-mocha.vercel.app/";
+  axios.defaults.baseURL = "http://localhost:3000/";
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [userData, setUserData] = useState([]);
   const [ischat,setChat] = useState(false)
@@ -54,6 +55,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/mcq-test" element={<MCQTest />} />
 
           {/* Dashboard Home */}
           <Route path="/dashboard" element={<Dashboard />} />
