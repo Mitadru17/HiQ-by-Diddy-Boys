@@ -16,15 +16,34 @@ function Resume() {
   useEffect(() => {
     if (!analysisResult) return;
 
-    const scrollInterval = setInterval(() => {
-      setScrollPositions(prev => ({
-        improvements: (prev.improvements + 1) % 2,
-        grammar: (prev.grammar + 1) % 2,
-        companies: (prev.companies + 1) % 2
-      }));
-    }, 5000); // Scroll every 5 seconds
+    const scrollContent = (element, startPosition) => {
+      if (!element) return;
+      
+      const scrollHeight = element.scrollHeight / 2;
+      const duration = 30000; // 30 seconds for one complete loop
+      let start = null;
+      
+      const step = (timestamp) => {
+        if (!start) start = timestamp;
+        const progress = (timestamp - start) % duration;
+        const percentage = (progress / duration) * scrollHeight;
+        
+        element.style.transform = `translateY(-${percentage}px)`;
+        requestAnimationFrame(step);
+      };
+      
+      requestAnimationFrame(step);
+    };
 
-    return () => clearInterval(scrollInterval);
+    // Start scrolling for each content section
+    const improvementsContent = document.querySelector('.improvements-content');
+    const grammarContent = document.querySelector('.grammar-content');
+    const companiesContent = document.querySelector('.companies-content');
+
+    scrollContent(improvementsContent);
+    scrollContent(grammarContent);
+    scrollContent(companiesContent);
+
   }, [analysisResult]);
 
   // Handle file selection
@@ -199,10 +218,7 @@ function Resume() {
               <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-[500px] relative">
                 <h2 className="text-2xl font-bold text-yellow-600 mb-6 sticky top-0 bg-white z-10">Improvements ✍️</h2>
                 <div className="h-[400px] overflow-hidden relative">
-                  <ul className="list-disc list-inside text-gray-700 space-y-4 transition-transform duration-1000"
-                      style={{
-                        transform: `translateY(-${scrollPositions.improvements * 50}%)`,
-                      }}>
+                  <ul className="improvements-content list-disc list-inside text-gray-700 space-y-4">
                     {[...analysisResult.improvements, ...analysisResult.improvements].map((improve, index) => (
                       <li className="font-monst font-bold py-2" key={index}>{improve}</li>
                     ))}
@@ -215,10 +231,7 @@ function Resume() {
               <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-[500px] relative">
                 <h2 className="text-2xl font-bold text-red-500 mb-6 sticky top-0 bg-white z-10">Grammar Issues ❌</h2>
                 <div className="h-[400px] overflow-hidden relative">
-                  <div className="space-y-6 transition-transform duration-1000"
-                       style={{
-                         transform: `translateY(-${scrollPositions.grammar * 50}%)`,
-                       }}>
+                  <div className="grammar-content space-y-6">
                     {analysisResult.grammar_issues.length > 0 ? (
                       <ul className="list-disc list-inside text-gray-700 space-y-4">
                         {[...analysisResult.grammar_issues, ...analysisResult.grammar_issues].map((issue, index) => (
@@ -250,10 +263,7 @@ function Resume() {
               <div className="p-10 bg-white border border-gray-300 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-95 hover:shadow-xl h-[500px] relative">
                 <h2 className="text-2xl font-bold text-blue-600 mb-6 sticky top-0 bg-white z-10">Suggested Companies 🎯</h2>
                 <div className="h-[400px] overflow-hidden relative">
-                  <ul className="space-y-6 transition-transform duration-1000"
-                      style={{
-                        transform: `translateY(-${scrollPositions.companies * 50}%)`,
-                      }}>
+                  <ul className="companies-content space-y-6">
                     {[...suggestedCompanies, ...suggestedCompanies].map((company, index) => {
                       const [name, ...descParts] = company.split(" - ");
                       const description = descParts.join(" - ");
