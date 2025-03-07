@@ -15,8 +15,12 @@ function Coaching() {
 
     const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
+    setInput(""); // Clear input after sending
     setLoading(true);
+
+    // Add a placeholder AI message to update text dynamically
+    const aiMessage = { sender: "ai", text: "" };
+    setMessages((prev) => [...prev, aiMessage]);
 
     try {
       const response = await fetch(
@@ -27,20 +31,7 @@ function Coaching() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: input
-                  }
-                ]
-              }
-            ],
-            generationConfig: {
-              temperature: 0.9,
-              topK: 1,
-              topP: 1
-            }
+            contents: [{ role: "user", parts: [{ text: input }] }],
           }),
         }
       );
@@ -50,34 +41,28 @@ function Coaching() {
       }
 
       const data = await response.json();
-      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
-      
-      // Add AI message with empty text initially
-      const aiMessage = { sender: "ai", text: "" };
-      setMessages((prev) => [...prev, aiMessage]);
+      const fullText =
+        data.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "Sorry, I couldn't understand that.";
 
-      // Simulate word-by-word typing effect
+      // Simulate word-by-word streaming effect
       let currentText = "";
-      const words = aiResponse.split(" ");
-      
-      for (const word of words) {
+      for (const word of fullText.split(" ")) {
         currentText += word + " ";
+        await new Promise((resolve) => setTimeout(resolve, 50)); // Adjust delay for better typing effect
+
+        // Update the last AI message dynamically
         setMessages((prev) => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1] = {
-            ...newMessages[newMessages.length - 1],
-            text: currentText.trim()
-          };
+          newMessages[newMessages.length - 1].text = currentText;
           return newMessages;
         });
-        await new Promise((resolve) => setTimeout(resolve, 50));
       }
-
     } catch (error) {
       console.error("Error fetching response:", error);
       setMessages((prev) => [
-        ...prev,
-        { sender: "ai", text: "Sorry, I encountered an error. Please try again." }
+        ...prev.slice(0, -1),
+        { sender: "ai", text: "Error fetching response. Try again later." },
       ]);
     } finally {
       setLoading(false);
@@ -109,6 +94,7 @@ function Coaching() {
                 msg.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
+              {/* Show AI Logo for AI Responses (Outside Answer Box) */}
               {msg.sender === "ai" && (
                 <img
                   src={"../Navbar/logo.webp"}
@@ -117,6 +103,7 @@ function Coaching() {
                 />
               )}
 
+              {/* Message Box */}
               <div
                 className={`rounded-bl-lg rounded-tl-lg p-3 max-w-[80%] break-words  font-monst shadow-md ${
                   msg.sender === "user"
@@ -131,12 +118,10 @@ function Coaching() {
         )}
 
         {loading && (
-          <div className="bg-gray-200 text-black rounded-tr-lg rounded-br-lg rounded-bl-3xl p-4 max-w-[80%] shadow-md w-fit">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-            </div>
+          <div className="flex justify-start items-center gap-1 mt-2">
+            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
           </div>
         )}
       </div>
