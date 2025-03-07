@@ -94,7 +94,6 @@ function Coaching() {
                 msg.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {/* Show AI Logo for AI Responses (Outside Answer Box) */}
               {msg.sender === "ai" && (
                 <img
                   src={"../Navbar/logo.webp"}
@@ -103,7 +102,6 @@ function Coaching() {
                 />
               )}
 
-              {/* Message Box */}
               <div
                 className={`rounded-bl-lg rounded-tl-lg p-3 max-w-[80%] break-words  font-monst shadow-md ${
                   msg.sender === "user"
@@ -118,10 +116,19 @@ function Coaching() {
         )}
 
         {loading && (
-          <div className="flex justify-start items-center gap-1 mt-2">
-            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+          <div className="flex items-start my-2 justify-start">
+            <img
+              src={"../Navbar/logo.webp"}
+              alt="AI Logo"
+              className="w-10 h-10 mr-2 rounded-full shadow-md"
+            />
+            <div className="bg-gray-200 text-black rounded-tr-lg rounded-br-lg rounded-bl-3xl p-4 max-w-[80%] shadow-md">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+              </div>
+            </div>
           </div>
         )}
       </div>
