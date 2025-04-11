@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/graphs/contributors)
-[![Issues](https://img.shields.io/github/issues/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/issues)
+[![Issues](https://img.shields.io/github/issues/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/ManojK2K06/AidX/issues)
 [![Pull Requests](https://img.shields.io/github/issues-pr/Mitadru17/HiQ-by-Diddy-Boys.svg)](https://github.com/Mitadru17/HiQ-by-Diddy-Boys/pulls)
 
 
